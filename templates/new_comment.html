@@ -1,14 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}New Comment{% endblock %}
+{% block content %}
 {% if session.user %}
 <form action="/create_comment" method="post">
-Title: <br>
-<br>
-Description: <br>
-<textarea name="content" rows="20" cols="60"></textarea>
-<br>
-<input type="submit" value="Create">
-</form>
+    Comment: <br>
+    <textarea name="content" rows="20" cols="60"></textarea>
+    <br>
+    <input type="submit" value="Create">
+    <input type="hidden" name="disc_id" value="{{ disc_id }}">
+    <input type="hidden" name="sub_id" value="{{ sub_id }}">
+    </form>
 {% else %}
 You must log in to create a new comment
 <p>
 <a href="/login">Log in</a>
 {% endif %}
+{% endblock %}

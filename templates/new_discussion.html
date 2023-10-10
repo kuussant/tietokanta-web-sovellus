@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}New discussion{% endblock %}
+{% block content %}
 {% if session.user %}
 <form action="/create_discussion" method="post">
     Topic: <br>
@@ -14,3 +17,4 @@ You must log in to create a new discussion
 <p>
 <a href="/login">Log in</a>
 {% endif %}
+{% endblock %}

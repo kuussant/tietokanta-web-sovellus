@@ -32,7 +32,7 @@ def create_sub():
     return redirect("/")
 
 #Siirrytään keskustelun luontiin
-@app.route("/new_discussion/<int:id>")
+@app.route("/sub/<int:id>/new_discussion")
 def new_discussion(id):
     return render_template("new_discussion.html", id=id)
 
@@ -44,13 +44,30 @@ def create_discussion():
     user_id = users.session_user_id()
     subforum_id = request.form["sub_id"]
     discussions.create_new_discussion(title, content, subforum_id, user_id)
-    return redirect("/")
+    return redirect("/sub/"+subforum_id)
 
+#Keskustelu
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>")
 def discussion(sub_id, disc_id):
+    print(f"================== SUB_ID = {sub_id} DISC_ID = {disc_id} USER_ID = {users.session_user_id()} ===================")
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
-    return render_template("discussion.html", title=disc.title, content=disc.content)
+    return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, sub_id=sub_id, id=disc_id)
+
+@app.route("/sub/<int:sub_id>/discussion/<int:disc_id>/new_comment")
+def new_comment(sub_id, disc_id):
+    print(f"==================== ADDING COMMENT SUB_ID = {sub_id} DISC_ID = {disc_id} ======================")
+    return render_template("new_comment.html", sub_id=sub_id, disc_id=disc_id)
+
+@app.route("/create_comment", methods=["POST"])
+def create_comment():
+    content = request.form["content"]
+    sub_id = request.form["sub_id"]
+    disc_id = request.form["disc_id"]
+    user_id = users.session_user_id()
+    print(f"================== WROTE COMMENT SUB_ID = {sub_id} DISC_ID = {disc_id} USER_ID = {user_id} ===================")
+    comments.create_new_comment(content, disc_id, user_id)
+    return redirect("/sub/"+sub_id+"/discussion/"+disc_id)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

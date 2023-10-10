@@ -12,7 +12,7 @@ def get_comment(id):
     result = db.db.session.execute(db.text(sql), {"id":id})
     return result.fetchone()
 
-def create_new_comment(content, discussion_id, user_id):
-    sql = "INSERT INTO comments (content, created_at, discussion_id, user_id) VALUES (:content, NOW(), :discussion_id, user_id)"
-    db.db.session.execute(db.text(sql), {"content":content, "discussion_id":discussion_id, "user_id":user_id})
+def create_new_comment(content, disc_id, user_id):
+    sql = "INSERT INTO comments (content, discussion_id, user_id, created_at) VALUES (:content, :discussion_id, :user_id, NOW())"
+    db.db.session.execute(db.text(sql), {"content":content, "discussion_id":disc_id, "user_id":user_id})
     db.db.session.commit()

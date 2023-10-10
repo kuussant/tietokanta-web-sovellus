@@ -1,3 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
 {% if session.username %}
 You have logged in as {{ session.username }}
 <a href="/logout">Log out</a>
@@ -10,3 +13,4 @@ You have logged in as {{ session.username }}
     <input type="submit" value="Create user">
 </form>
 {% endif %}
+{% endblock %}

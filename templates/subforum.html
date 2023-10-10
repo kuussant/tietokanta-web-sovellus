@@ -1,11 +1,14 @@
-<b>{{ title }}</b>
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h2>{{ title }}</h2>
 <p>
 Moderator: {{ sub_username }}
 <p>
 <hr>
 {{ content }}
 <hr>
-<a href="/new_discussion/{{ id }}">Create new discussion</a> | 
+<a href="/sub/{{ id }}/new_discussion">Create new discussion</a> | 
 {% if follows %}
 <a href="/unfollow/{{ id }}">Unfollow</a>
 {% else %}
@@ -19,3 +22,4 @@ Started: {{ disc_username }}
 <p>
 Created at: {{ discussion.created_at }}
 {% endfor %}
+{% endblock %}

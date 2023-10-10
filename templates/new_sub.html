@@ -1,15 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}New Sub{% endblock %}
+{% block content %}
 {% if session.user %}
 <form action="/create_sub" method="post">
-Title: <br>
-<textarea name="title" rows="1" cols="40"></textarea>
-<br>
-Description: <br>
-<textarea name="content" rows="20" cols="60"></textarea>
-<br>
-<input type="submit" value="Create">
-</form>
+    Title: <br>
+    <textarea name="title" rows="1" cols="40"></textarea>
+    <br>
+    Description: <br>
+    <textarea name="content" rows="20" cols="60"></textarea>
+    <br>
+    <input type="submit" value="Create">
+    </form>
 {% else %}
 You must log in to create a new subforum
 <p>
 <a href="/login">Log in</a>
 {% endif %}
+{% endblock %}
