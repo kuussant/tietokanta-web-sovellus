@@ -7,5 +7,3 @@
     - Keskustelupalstojen lukeminen ilman tunnuksia on mahdollista
 - Käyttäjät voivat lisätä toisensa kavereiksi kaveripyynnöillä
 - Käyttäjät voivat lähettää yksityisiä viestejä kavereilleen
-
-testi
