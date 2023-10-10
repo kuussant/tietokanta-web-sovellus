@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<title>Forums - {% block title %}{% endblock %}</title>
+<h1>Forums</h1>
+<a href="/">Front page</a>
+{% if session.user %}
+You have logged in as {{ session.user[0] }}
+<a href="/logout">Log out</a>
+{% else %}
+<a href="/login">Log in</a>
+{% endif %}
+<hr>
+{% block content %}{% endblock %}
+<hr>

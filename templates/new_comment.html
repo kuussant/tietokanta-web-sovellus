@@ -1,0 +1,14 @@
+{% if session.user %}
+<form action="/create_comment" method="post">
+Title: <br>
+<br>
+Description: <br>
+<textarea name="content" rows="20" cols="60"></textarea>
+<br>
+<input type="submit" value="Create">
+</form>
+{% else %}
+You must log in to create a new comment
+<p>
+<a href="/login">Log in</a>
+{% endif %}

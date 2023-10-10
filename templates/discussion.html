@@ -1,0 +1,19 @@
+<b>{{ title }}</b>
+<p>
+Started: {{ disc_username }}
+<p>
+<hr>
+{{ content }}
+<hr>
+<a href="/new_comment/{{ id }}">Add comment</a>
+<p>
+{% if comments %}
+{% for comment in comments %}
+<hr>
+<a href="/user/{{ comment.user_id }}">{{ comment.user_id }}</a> {{ comment.created_at }}
+<p>
+{{ comment.content }}
+{% endfor %}
+{% else %}
+No comments
+{% endif %}

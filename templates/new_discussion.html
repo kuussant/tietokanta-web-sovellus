@@ -1,0 +1,16 @@
+{% if session.user %}
+<form action="/create_discussion" method="post">
+    Topic: <br>
+    <textarea name="title" rows="3" cols="40"></textarea>
+    <br>
+    Content: <br>
+    <textarea name="content" rows="20" cols="60"></textarea>
+    <br>
+    <input type="submit" value="Create">
+    <input type="hidden" name="sub_id" value="{{ id }}">
+</form>
+{% else %}
+You must log in to create a new discussion
+<p>
+<a href="/login">Log in</a>
+{% endif %}

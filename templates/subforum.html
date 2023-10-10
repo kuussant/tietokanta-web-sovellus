@@ -1,0 +1,21 @@
+<b>{{ title }}</b>
+<p>
+Moderator: {{ sub_username }}
+<p>
+<hr>
+{{ content }}
+<hr>
+<a href="/new_discussion/{{ id }}">Create new discussion</a> | 
+{% if follows %}
+<a href="/unfollow/{{ id }}">Unfollow</a>
+{% else %}
+<a href="/follow/{{ id }}">Follow</a>
+{% endif %}
+{% for discussion in discussions %}
+<hr>
+<a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a>
+<p>
+Started: {{ disc_username }}
+<p>
+Created at: {{ discussion.created_at }}
+{% endfor %}
