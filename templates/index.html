@@ -1,18 +1,25 @@
+<!DOCTYPE html>
 {% extends "layout.html" %}
 {% block title %}Front page{% endblock %}
+{% block page %}Front page{% endblock %}
 {% block content %}
 {% if session.user %}
 <a href="/new_sub">Create new subforum</a>
-{% endif %}
 <hr>
+{% endif %}
 {% if subforums %}
+<div class="row">
 {% for subforum in subforums %}
-<a href="/sub/{{ subforum.id }}">{{ subforum.title }}</a>
-<p>
-<i>Followers:</i> {{ subforum.followers }}
-<p> 
+<div class="col-sm">
+    <h4><a href="/sub/{{ subforum.id }}">{{ subforum.title }}</a></h4>
+</div>
+<div class="col-sm">
+    {{ subforum.followers }} followers
+</div>
+</div>
 <i>Created at:</i> {{ subforum.created_at }}
 {% endfor %}
+</div>
 {% else %}
 No subforums
 {% endif %}

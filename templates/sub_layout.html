@@ -3,15 +3,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Forums - {% block title %}{% endblock %}</title>
 <div class="container">
-    <h1>Forums - {% block page %}{% endblock %}</h1>
+    <h2>Forums - {% block page %}{% endblock %}</h2>
     <div class="row">
         <div class="col-sm">
+            <a href="/">Front page</a>
+        </div>
+        <div class="col-sm">
             {% if session.user %}
-            You have logged in as {{ session.user[0] }}
+            You have logged in as {{ session.user[0] }} |
             <a href="/logout">Log out</a>
             {% else %}
-            <a href="/login">Log in</a>
-            {% endif %}
+            {% block login %}{% endblock %}
+            {% endif %} 
         </div>
     </div>
     <hr>

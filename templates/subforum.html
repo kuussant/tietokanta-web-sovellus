@@ -1,19 +1,27 @@
-{% extends "layout.html" %}
+{% extends "sub_layout.html" %}
 {% block title %}{{ title }}{% endblock %}
+{% block login %}<a href="/login">Log in</a>{% endblock %}
 {% block content %}
-<h2>{{ title }}</h2>
-<p>
-Moderator: {{ sub_username }}
-<p>
-<hr>
-{{ content }}
-<hr>
-<a href="/sub/{{ id }}/new_discussion">Create new discussion</a> | 
-{% if follows %}
-<a href="/unfollow/{{ id }}">Unfollow</a>
-{% else %}
-<a href="/follow/{{ id }}">Follow</a>
-{% endif %}
+<div class="container">
+    <h2>{{ title }}</h2>
+    {{ content }}
+    <p>
+    <div class="row">
+        <div class="col-sm">
+            Moderator: {{ sub_username }}
+        </div>
+        <div class="col-sm">
+            <a href="/sub/{{ id }}/new_discussion">Create new discussion</a>
+        </div>
+        <div class="col-sm">
+            {% if follows %}
+            <a href="/unfollow/{{ id }}">Unfollow</a>
+            {% else %}
+            <a href="/follow/{{ id }}">Follow</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% for discussion in discussions %}
 <hr>
 <a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a>

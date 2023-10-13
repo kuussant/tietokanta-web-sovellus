@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "sub_layout.html" %}
 {% block title %}Login{% endblock %}
 {% block content %}
 {% if session.user %}
@@ -13,6 +13,7 @@ You have logged in as {{ session.user[0] }}
     <input type="submit" value="Login">
 </form>
 <p>
-If you don't have a user, you can register <a href="/register">here</a>
+<p>
+If you don't have an account, you can register <a href="/register">here</a>
 {% endif %}
 {% endblock %}
