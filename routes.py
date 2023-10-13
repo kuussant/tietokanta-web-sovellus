@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, redirect, request, url_for, session
+from flask import render_template, redirect, request, url_for, session, flash
 import subforums, discussions, messages, users, comments
 
 @app.route("/")
@@ -92,29 +92,51 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    template_name = "register.html"
+    username = None
+    password = None
     error = None
+
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template(template_name)
     
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
-        if len(username) > 3 and password > 5:
+        name_ok = users.is_username_ok(username)
+        pass_ok = users.is_password_ok(password)
+        
+        print(f"USERNAME_OK: {name_ok} PASSWORD_OK: {pass_ok}")
+
+        if name_ok and pass_ok:
             if users.register(username, password):
+                print("EEELO", session["url"])
                 return redirect(session["url"])
             else:
-                error = "Username is taken"
-                return render_template("register.html")
+                error = "Username is taken."
+        else:
+            if name_ok:
+                error = f"Make sure password length is {users.PASSWORD_MIN} - {users.PASSWORD_MAX} characters long."
+            elif pass_ok:
+                error = f"Make sure username length is {users.USERNAME_MIN} - {users.USERNAME_MAX} characters long."
+            else:
+                error = f"Make sure username length is {users.USERNAME_MIN} - {users.USERNAME_MAX} characters long and password length is {users.PASSWORD_MIN} - {users.PASSWORD_MAX} characters long."
+    if error:
+        flash(error)
+        return render_template(template_name, name_value=username, pass_value=password, error=error)
 
             
-        
-@app.route("/logout")
-def logout():
-    users.logout()
-    return redirect(session["url"])
 
+#TODO: HALUTAAN HAKEA PROFIILI, 
+# KAIKKI SIIHEN LIITTYVÄT SUBIT, KESKUSTELUT JA KOMMENTIT 
+# SEKÄ KAVERIT
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
     session['url'] = url_for("profile", id=id)
     return render_template("profile.html")
+
+@app.route("/logout")
+def logout():
+    users.logout()
+    return redirect(session["url"])

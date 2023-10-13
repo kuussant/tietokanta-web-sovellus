@@ -2,6 +2,11 @@ import db
 from flask import session
 from werkzeug.security import check_password_hash, generate_password_hash
 
+USERNAME_MIN = 3
+USERNAME_MAX = 20
+PASSWORD_MIN = 6
+PASSWORD_MAX = 30
+
 def login(username, password):
     sql = "SELECT id, password FROM users WHERE username=:username"
     result = db.db.session.execute(db.text(sql), {"username":username})
@@ -10,7 +15,7 @@ def login(username, password):
     if user:
         hash_value = user.password
         if check_password_hash(hash_value, password):
-            print("USER PASSWORD OK")
+            print("login() USER PASSWORD OK")
             session["user"] = (username, user.id)
             return True
         else:
@@ -48,3 +53,13 @@ def get_username(id):
     result = db.db.session.execute(db.text(sql), {"id":id})
     username = result.fetchone()
     return username[0]
+
+def is_username_ok(username):
+    if USERNAME_MAX >= len(username) >= USERNAME_MIN:
+        return True
+    return False
+
+def is_password_ok(password):
+    if PASSWORD_MAX >= len(password) >= PASSWORD_MIN:
+        return True
+    return False

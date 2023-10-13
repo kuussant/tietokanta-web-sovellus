@@ -6,11 +6,14 @@
 You have logged in as {{ session.username }}
 <a href="/logout">Log out</a>
 {% else %}
+{% if error %}
+<p class="error" style="color: red;"><strong>{{ error }}</strong>
+{% endif %}
 <form action="/register" method="POST">
-    <p>Tunnus:<br>
-    <input type="text" name="username"></p>
-    <p>Salasana:<br>
-    <input type="password" name="password"></p>
+    <p>Username:<br>
+    <input type="text" name="username" value="{{ name_value }}"></p>
+    <p>Password:<br>
+    <input type="password" name="password" value="{{ pass_value }}"></p>
     <input type="submit" value="Create user">
 </form>
 {% endif %}
