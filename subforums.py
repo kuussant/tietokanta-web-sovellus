@@ -3,7 +3,7 @@ import users
 
 def get_list():
     #sql = "SELECT S.title, S.followers, U.username FROM subforums S, users U WHERE S.user_id=U.id ORDER BY S.id"
-    sql = "SELECT S.id, S.title, S.followers, S.created_at FROM subforums S"
+    sql = "SELECT S.id, S.title, S.followers, S.created_at, S.user_id, (SELECT username FROM users WHERE S.user_id = id) AS username FROM subforums S ORDER BY S.created_at"
     result = db.db.session.execute(db.text(sql))
     return result.fetchall()
 

@@ -1,11 +1,12 @@
-{% extends "sub_layout.html" %}
+{% extends "layout.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block login %}<a href="/login">Log in</a>{% endblock %}
 {% block content %}
 <div class="container">
     <h2>{{ title }}</h2>
-    {{ content }}
     <p>
+        {{ content }}
+    </p>
     <div class="row">
         <div class="col-sm">
             Moderator: {{ sub_username }}
@@ -21,13 +22,17 @@
             {% endif %}
         </div>
     </div>
-</div>
-{% for discussion in discussions %}
+    {% for discussion in discussions %}
 <hr>
-<a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a>
-<p>
-Started: {{ disc_username }}
-<p>
-Created at: {{ discussion.created_at }}
+<h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+<div class="row">
+    <div class="col">
+        Started: <a href="/profile/{{ discussion.user_id }}">{{ discussion.username }}</a>
+    </div>
+    <div class="col">    
+        Created at: {{ discussion.created_at }}
+    </div>
+</div>
 {% endfor %}
+</div>
 {% endblock %}

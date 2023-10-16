@@ -1,21 +1,45 @@
 <body>
-{% extends "sub_layout.html" %}
-{% block title %}Register{% endblock %}
-{% block content %}
-{% if session.username %}
-You have logged in as {{ session.username }}
-<a href="/logout">Log out</a>
-{% else %}
-{% if error %}
-<p class="error" style="color: red;"><strong>{{ error }}</strong>
-{% endif %}
-<form action="/register" method="POST">
-    <p>Username:<br>
-    <input type="text" name="username" value="{{ name_value }}"></p>
-    <p>Password:<br>
-    <input type="password" name="password" value="{{ pass_value }}"></p>
-    <input type="submit" value="Create user">
-</form>
-{% endif %}
-{% endblock %}
+    {% extends "sub_layout.html" %}
+    {% block title %}Register{% endblock %}
+    {% block content %}
+    {% if session.username %}
+    You have logged in as {{ session.username }}
+    <a href="/logout">Log out</a>
+    {% else %}
+    {% if error %}
+    <p class="error" style="color: red;"><strong>{{ error }}</strong>
+    {% endif %}
+    <form action="/register" method="POST">
+        <div class="form-group col-6">
+            <label for="inputUsername">Username</label>
+            <input type="text" class="form-control" name="username" id="inputUsername" aria-describedby="usernameHelp" value="{{ name_value }}">
+            <small id="usernameHelp" class="form-text text-muted">Your username must be {{ name_min }} - {{ name_max }} characters long.</small>
+        </div>
+        <div class="form-group col-6">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" name="password1" id="inputPassword" value="{{ pass_value1 }}">
+        </div>
+        <div class="form-group col-6">
+            <label for="inputPassword">Confirm password</label>
+            <input type="password" class="form-control" name="password2" id="inputPassword" aria-describedby="passwordHelp" value="{{ pass_value2 }}">
+            <small id="passwordHelp" class="form-text text-muted">Your password must be at least {{ pass_min }} characters long and contain 4 different types of characters (lower case, upper case, digits, special characters ie. !?+&).</small>
+        </div>
+        <div class="form-group col-6">
+            {% if session.url %}
+            <a href="{{ session.url }}"><button class="btn btn-outline-secondary" type="button" name="register">Cancel</button></a>
+            {% else %}
+            <a href="/"><button class="btn btn-secondary" type="button" name="register">Cancel</button></a>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+    </form>
+    <!--<form action="/register" method="POST">
+        <p>Username:<br>
+        <input type="text" name="username" value="{{ name_value }}"></p>
+        <p>Password:<br>
+        <input type="password" name="password" value="{{ pass_value }}"></p>
+        <button type="submit" class="btn btn-primary">Create user</button>
+    </form>-->
+    {% endif %}
+    {% endblock %}
 </body>

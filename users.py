@@ -26,7 +26,7 @@ def login(username, password):
 def register(username, password):
     try:
         hash_value = generate_password_hash(password)
-        sql = "INSERT INTO users (username, password) VALUES (:username, :password)"
+        sql = "INSERT INTO users (username, password, created_at) VALUES (:username, :password, NOW())"
         db.db.session.execute(db.text(sql), {"username":username, "password":hash_value})
         db.db.session.commit()
     except:
@@ -53,6 +53,38 @@ def get_username(id):
     result = db.db.session.execute(db.text(sql), {"id":id})
     username = result.fetchone()
     return username[0]
+
+def get_user_by_id(id):
+    sql = "SELECT * FROM users WHERE id=:id"
+    result = db.db.session.execute(db.text(sql), {"id":id})
+    user = result.fetchone()
+    return user
+
+def get_user_comments(id):
+    sql = "SELECT * FROM comments WHERE user_id=:id"
+    result = db.db.session.execute(db.text(sql), {"id":id})
+    comments = result.fetchall()
+    return comments
+
+def get_user_subforums(id):
+    sql = "SELECT * FROM subforums WHERE user_id=:id"
+    result = db.db.session.execute(db.text(sql), {"id":id})
+    subforums = result.fetchall()
+    return subforums
+
+def get_user_discussions(id):
+    sql = "SELECT * FROM discussions WHERE user_id=:id"
+    result = db.db.session.execute(db.text(sql), {"id":id})
+    discussions = result.fetchall()
+    return discussions
+
+def does_username_exist(username):
+    sql = "SELECT 1 FROM users WHERE username=:username"
+    result = db.db.session.execute(db.text(sql), {"username":username})
+    if result.fetchone():
+        print("yoooooo")
+        return True
+    return False
 
 def is_username_ok(username):
     if USERNAME_MAX >= len(username) >= USERNAME_MIN:

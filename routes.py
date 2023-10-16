@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, redirect, request, url_for, session, flash
-import subforums, discussions, messages, users, comments
+import subforums, discussions, messages, users, comments, helpers
 
 @app.route("/")
 def index():
@@ -87,44 +87,52 @@ def login():
             print("LOGIN OK")
             return redirect(session["url"])
         else:
-            print("LOGIN NOT OK")
-            return render_template("login.html")
+            if users.does_username_exist(username):
+                error = "Wrong password"
+            else:
+                error = "Username does not exist"
+            return render_template("login.html", name_value=username, pass_value=password, error=error)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     template_name = "register.html"
     username = None
-    password = None
+    password1 = None
+    password2 = None
     error = None
+    name_min = users.USERNAME_MIN
+    name_max = users.USERNAME_MAX
+    pass_min = users.PASSWORD_MIN
+    pass_max = users.PASSWORD_MAX
 
     if request.method == "GET":
-        return render_template(template_name)
+        return render_template(template_name, name_min=name_min, name_max=name_max, pass_min=pass_min, pass_max=pass_max)
     
     if request.method == "POST":
         username = request.form["username"]
-        password = request.form["password"]
+        password1 = request.form["password1"]
+        password2 = request.form["password2"]
 
-        name_ok = users.is_username_ok(username)
-        pass_ok = users.is_password_ok(password)
-        
-        print(f"USERNAME_OK: {name_ok} PASSWORD_OK: {pass_ok}")
+        name_ok = helpers.is_username_ok(username)
+        pass_ok = helpers.is_password_ok(password1)
 
         if name_ok and pass_ok:
-            if users.register(username, password):
-                print("EEELO", session["url"])
-                return redirect(session["url"])
+            if password1 == password2:
+                if users.register(username, password1):
+                    return redirect(session["url"])
+                else:
+                    error = "Username is taken! Try another username."
             else:
-                error = "Username is taken."
+                error = "Make sure the passwords match."
         else:
             if name_ok:
-                error = f"Make sure password length is {users.PASSWORD_MIN} - {users.PASSWORD_MAX} characters long."
+                error = f"Make sure the password length is {pass_min} - {pass_max} characters long."
             elif pass_ok:
-                error = f"Make sure username length is {users.USERNAME_MIN} - {users.USERNAME_MAX} characters long."
+                error = f"Make sure the username length is {name_min} - {name_max} characters long."
             else:
-                error = f"Make sure username length is {users.USERNAME_MIN} - {users.USERNAME_MAX} characters long and password length is {users.PASSWORD_MIN} - {users.PASSWORD_MAX} characters long."
+                error = f"Make sure the username length is {name_min} - {name_max} characters long and the password length is {pass_min} - {pass_max} characters long."
     if error:
-        flash(error)
-        return render_template(template_name, name_value=username, pass_value=password, error=error)
+        return render_template(template_name, name_min=name_min, name_max=name_max, pass_min=pass_min, pass_max=pass_max, name_value=username, pass_value1=password1, pass_value2=password2, error=error)
 
             
 
@@ -134,7 +142,8 @@ def register():
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
     session['url'] = url_for("profile", id=id)
-    return render_template("profile.html")
+    user = users.get_user_by_id(id)
+    return render_template("profile.html", user=user)
 
 @app.route("/logout")
 def logout():

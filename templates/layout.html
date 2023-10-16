@@ -1,20 +1,40 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forums - {% block title %}{% endblock %}</title>
+<head>
+    <title>Forums - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
 <div class="container">
-    <h1>Forums - {% block page %}{% endblock %}</h1>
-    <div class="row">
-        <div class="col-sm">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a class="d-flex alight-items-center col-md-3 mb-2 mb-md-0 test-dark" href="/">
+            <h1>Forums</h1>
+        </a>
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li>
+                <a class="nav-link px-2 link-secondary" href="/">Home</a>
+            </li>
+            <li>
+                <a class="nav-link px-2 link-dark" href="/">Discussions</a>
+            </li>
+            <li>
+                <a class="nav-link px-2 link-dark" >Features</a>
+            </li>
+        </ul>
+        <div class="col-md-3 text-end">
             {% if session.user %}
-            You have logged in as {{ session.user[0] }}
-            <a href="/logout">Log out</a>
+            Logged in as <a href="/profile/{{ session.user[1] }}">{{ session.user[0] }}</a>
+            <a href="/profile/{{ session.user[1] }}"><button class="btn btn-outline-primary me-2" type="button">Profile</button></a>
+            
+            <a href="/logout"><button class="btn btn-outline-primary me-2" type="button">Logout</button></a>
             {% else %}
-            <a href="/login">Log in</a>
+            <a href="/login"><button class="btn btn-outline-primary me-2" type="button">Login</button></a>
+
+            <a href="/register"><button class="btn btn-primary" type="button" name="register">Register</button></a>
             {% endif %}
         </div>
-    </div>
-    <hr>
-    {% block content %}{% endblock %}
-    <hr>
+    </header>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
 </div>

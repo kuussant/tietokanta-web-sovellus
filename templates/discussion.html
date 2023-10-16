@@ -1,12 +1,13 @@
 {% extends "sub_layout.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<b>{{ title }}</b>
 <p>
+    <b>{{ title }}</b>
+</p>
 Started: {{ disc_username }}
 <p>
-<hr>
-{{ content }}
+    {{ content }}
+</p>
 <hr>
 <a href="/sub/{{ sub_id }}/discussion/{{ id }}/new_comment">Add comment</a>
 <p>
@@ -14,7 +15,7 @@ Started: {{ disc_username }}
 {% for comment in comments %}
 <hr>
 <a href="/user/{{ comment.user_id }}">{{ comment.user_id }}</a> {{ comment.created_at }}
-<p>
+<br>
 {{ comment.content }}
 {% endfor %}
 {% else %}

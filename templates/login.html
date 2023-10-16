@@ -5,15 +5,27 @@
 You have logged in as {{ session.user[0] }}
 <a href="/logout">Log out</a>
 {% else %}
+{% if error %}
+    <p class="error" style="color: red;"><strong>{{ error }}</strong>
+{% endif %}
 <form action="/login" method="POST">
-    <p>Tunnus:<br>
-    <input type="text" name="username"></p>
-    <p>Salasana:<br>
-    <input type="password" name="password"></p>
-    <input type="submit" value="Login">
+    <div class="form-group col-6">
+        <label for="inputUsername">Username</label>
+        <input type="text" class="form-control" name="username" id="inputUsername" value="{{ name_value }}">
+    </div>
+    <div class="form-group col-6">
+        <label for="inputPassword">Password</label>
+        <input type="password" class="form-control" name="password" id="inputPassword" value="{{ pass_value }}">
+    </div>
+    <div class="form-group col-6">
+        {% if session.url %}
+        <a href="{{ session.url }}"><button class="btn btn-outline-secondary" type="button" name="register">Cancel</button></a>
+        {% else %}
+        <a href="/"><button class="btn btn-secondary" type="button" name="register">Cancel</button></a>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Login</button>
+    </div>
 </form>
-<p>
-<p>
 If you don't have an account, you can register <a href="/register">here</a>
 {% endif %}
 {% endblock %}

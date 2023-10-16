@@ -2,7 +2,7 @@ import db
 import users
 
 def get_list_by_sub_id(id):
-    sql = "SELECT * FROM discussions WHERE subforum_id=:id"
+    sql = "SELECT D.id, D.title, D.created_at, D.subforum_id, D.user_id, (SELECT username FROM users WHERE D.user_id=id) AS username FROM discussions D WHERE D.subforum_id=:id ORDER BY D.created_at DESC"
     result = db.db.session.execute(db.text(sql), {"id":id})
     return result.fetchall()
 
