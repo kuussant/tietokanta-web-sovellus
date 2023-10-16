@@ -1,6 +1,9 @@
 from app import app
+
 from flask import render_template, redirect, request, url_for, session, flash
-import subforums, discussions, messages, users, comments, helpers
+
+import subforums, discussions, messages, users, comments
+
 
 @app.route("/")
 def index():
@@ -10,7 +13,7 @@ def index():
     print("USER ID", user_id)
     return render_template("index.html", subforums=list)
 
-#Siirrytään subiin
+
 @app.route("/sub/<int:id>")
 def sub(id):
     session['url'] = url_for("sub", id=id)
@@ -19,13 +22,13 @@ def sub(id):
     sub = subforums.get_sub(id)
     return render_template("subforum.html", title=sub.title, content=sub.content, sub_username=users.get_username(sub.user_id), discussions=list, id=id)
 
-#Siirrytään uuden subin luontiin
+
 @app.route("/new_sub")
 def new_sub():
     session['url'] = url_for("new_sub")
     return render_template("new_sub.html")
 
-#Luodaan subi
+
 @app.route("/create_sub", methods=["POST"])
 def create_sub():
     title = request.form["title"]
@@ -34,13 +37,13 @@ def create_sub():
     subforums.create_new_sub(title, content, user_id)
     return redirect("/")
 
-#Siirrytään keskustelun luontiin
+
 @app.route("/sub/<int:id>/new_discussion")
 def new_discussion(id):
     session['url'] = url_for("new_discussion", id=id)
     return render_template("new_discussion.html", id=id)
 
-#Luodaan keskustelu
+
 @app.route("/create_discussion", methods=["POST"])
 def create_discussion():
     title = request.form["title"]
@@ -50,20 +53,20 @@ def create_discussion():
     discussions.create_new_discussion(title, content, subforum_id, user_id)
     return redirect("/sub/"+subforum_id)
 
-#Keskustelu
+
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>")
 def discussion(sub_id, disc_id):
     session['url'] = url_for("discussion", sub_id=sub_id, disc_id=disc_id)
-    print(f"================== SUB_ID = {sub_id} DISC_ID = {disc_id} USER_ID = {users.session_user_id()} ===================")
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
     return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, sub_id=sub_id, id=disc_id)
 
+
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>/new_comment")
 def new_comment(sub_id, disc_id):
     session['url'] = url_for("new_comment", sub_id=sub_id, disc_id=disc_id)
-    print(f"==================== ADDING COMMENT SUB_ID = {sub_id} DISC_ID = {disc_id} ======================")
     return render_template("new_comment.html", sub_id=sub_id, disc_id=disc_id)
+
 
 @app.route("/create_comment", methods=["POST"])
 def create_comment():
@@ -71,9 +74,9 @@ def create_comment():
     sub_id = request.form["sub_id"]
     disc_id = request.form["disc_id"]
     user_id = users.session_user_id()
-    print(f"================== WROTE COMMENT SUB_ID = {sub_id} DISC_ID = {disc_id} USER_ID = {user_id} ===================")
     comments.create_new_comment(content, disc_id, user_id)
     return redirect("/sub/"+sub_id+"/discussion/"+disc_id)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -84,14 +87,14 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if users.login(username, password):
-            print("LOGIN OK")
             return redirect(session["url"])
         else:
             if users.does_username_exist(username):
-                error = "Wrong password"
+                error = "Wrong password!"
             else:
-                error = "Username does not exist"
+                error = "Username does not exist!"
             return render_template("login.html", name_value=username, pass_value=password, error=error)
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -113,8 +116,8 @@ def register():
         password1 = request.form["password1"]
         password2 = request.form["password2"]
 
-        name_ok = helpers.is_username_ok(username)
-        pass_ok = helpers.is_password_ok(password1)
+        name_ok = users.is_username_ok(username)
+        pass_ok = users.is_password_ok(password1)
 
         if name_ok and pass_ok:
             if password1 == password2:
@@ -123,27 +126,24 @@ def register():
                 else:
                     error = "Username is taken! Try another username."
             else:
-                error = "Make sure the passwords match."
+                error = "Make sure the passwords match!"
         else:
             if name_ok:
-                error = f"Make sure the password length is {pass_min} - {pass_max} characters long."
+                error = f"Make sure your password is in correct form!"
             elif pass_ok:
-                error = f"Make sure the username length is {name_min} - {name_max} characters long."
+                error = f"Make sure your username is in correct form!"
             else:
-                error = f"Make sure the username length is {name_min} - {name_max} characters long and the password length is {pass_min} - {pass_max} characters long."
+                error = f"Make sure your username and password are in correct forms!"
     if error:
         return render_template(template_name, name_min=name_min, name_max=name_max, pass_min=pass_min, pass_max=pass_max, name_value=username, pass_value1=password1, pass_value2=password2, error=error)
 
-            
 
-#TODO: HALUTAAN HAKEA PROFIILI, 
-# KAIKKI SIIHEN LIITTYVÄT SUBIT, KESKUSTELUT JA KOMMENTIT 
-# SEKÄ KAVERIT
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
     session['url'] = url_for("profile", id=id)
     user = users.get_user_by_id(id)
     return render_template("profile.html", user=user)
+
 
 @app.route("/logout")
 def logout():

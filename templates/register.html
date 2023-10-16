@@ -13,7 +13,7 @@
         <div class="form-group col-6">
             <label for="inputUsername">Username</label>
             <input type="text" class="form-control" name="username" id="inputUsername" aria-describedby="usernameHelp" value="{{ name_value }}">
-            <small id="usernameHelp" class="form-text text-muted">Your username must be {{ name_min }} - {{ name_max }} characters long.</small>
+            <small id="usernameHelp" class="form-text text-muted">Your username must be {{ name_min }} - {{ name_max }} characters long and can't contain spaces or special characters (e.g. !?+&*_).</small>
         </div>
         <div class="form-group col-6">
             <label for="inputPassword">Password</label>
@@ -22,7 +22,7 @@
         <div class="form-group col-6">
             <label for="inputPassword">Confirm password</label>
             <input type="password" class="form-control" name="password2" id="inputPassword" aria-describedby="passwordHelp" value="{{ pass_value2 }}">
-            <small id="passwordHelp" class="form-text text-muted">Your password must be at least {{ pass_min }} characters long and contain 4 different types of characters (lower case, upper case, digits, special characters ie. !?+&).</small>
+            <small id="passwordHelp" class="form-text text-muted">Your password must be at least {{ pass_min }} characters long and contain 4 different types of characters (lower case, upper case, digits, special characters (e.g. !?+&*_)).</small>
         </div>
         <div class="form-group col-6">
             {% if session.url %}
@@ -33,13 +33,6 @@
             <button type="submit" class="btn btn-primary">Register</button>
         </div>
     </form>
-    <!--<form action="/register" method="POST">
-        <p>Username:<br>
-        <input type="text" name="username" value="{{ name_value }}"></p>
-        <p>Password:<br>
-        <input type="password" name="password" value="{{ pass_value }}"></p>
-        <button type="submit" class="btn btn-primary">Create user</button>
-    </form>-->
     {% endif %}
     {% endblock %}
 </body>
