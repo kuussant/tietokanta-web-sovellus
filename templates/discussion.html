@@ -1,25 +1,59 @@
-{% extends "sub_layout.html" %}
+{% extends "layout.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
+<small>
+    Started: <a href="/profile/{{ user_id }}">{{ get_user_by_id(user_id).username }}</a>
+</small>
+
 <p>
     <b>{{ title }}</b>
 </p>
-Started: <a href="/profile/{{ user_id }}">{{ get_user_by_id(user_id).username }}</a>
+
 <p>
     {{ content }}
 </p>
 <hr>
-<a href="/sub/{{ sub_id }}/discussion/{{ id }}/new_comment">Add comment</a>
-<hr>
-{% if comments %}
-{% for comment in comments %}
-<small>
-    {% if user_id == comment.user_id %}<b>OP</b>{% endif %} <a href="/profile/{{ comment.user_id }}">{{ get_user_by_id(comment.user_id).username }}</a> &#x2022 {{ get_time_ago(comment.created_at)}}
-</small>
-<br>
-{{ comment.content }}
-<hr>
-{% endfor %}
+
+<div class="container">
+
+    {% if session.user %}
+    <div class="row">
+        <div class="col">
+            <form action="/create_comment" method="POST">
+
+                <div class="form-group col-6">
+                    <label for="">Comment</label>
+                    <textarea type="password" class="form-control" name="content" id="textareaContent" rows="4"></textarea>
+                </div>
+            
+                <div class="form-group col-6">
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                    <input type="hidden" name="sub_id" value="{{ sub_id }}">
+                    <input type="hidden" name="disc_id" value="{{ id }}">
+                </div>
+            
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    {% else %}
+    <a href="/login">Login</a> to comment
+    {% endif %}
+    
+    {% if comments %}
+    <div class="container">
+        {% for comment in comments %}
+        <small>
+            {% if user_id == comment.user_id %}<b>OP</b>{% endif %} <a href="/profile/{{ comment.user_id }}">{{ get_user_by_id(comment.user_id).username }}</a> &#x2022 {{ get_time_ago(comment.created_at)}}
+        </small>
+        <br>
+        {{ comment.content }}
+        <hr>
+        {% endfor %}
+    </div>
+</div>
 {% else %}
 No comments
 {% endif %}

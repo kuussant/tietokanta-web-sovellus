@@ -7,8 +7,14 @@ ITEM_TYPE = "subforum"
 
 
 def get_list():
-    sql = "SELECT S.id, S.title, S.followers, S.created_at, S.user_id, (SELECT username FROM users WHERE S.user_id = id) AS username FROM subforums S ORDER BY S.created_at"
+    sql = "SELECT S.id, S.title, S.followers, S.created_at, S.user_id, (SELECT username FROM users WHERE S.user_id = id) AS username FROM subforums S ORDER BY S.created_at DESC"
     result = db.db.session.execute(db.text(sql))
+    return result.fetchall()
+
+
+def get_list_by_user_id(id):
+    sql = "SELECT * FROM subforums WHERE user_id=:id ORDER BY created_at DESC"
+    result = db.db.session.execute(db.text(sql), {"id":id})
     return result.fetchall()
 
 

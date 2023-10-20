@@ -8,6 +8,7 @@ import helpers, timefunctions
 
 import subforums, discussions, messages, users, comments
 
+current_template = []
 
 @app.route("/")
 def index():
@@ -53,6 +54,7 @@ def create_discussion():
     content = request.form["content"]
     user_id = users.session_user_id()
     subforum_id = request.form["sub_id"]
+    print("SUB ID:", subforum_id)
     discussions.create_new_discussion(title, content, subforum_id, user_id)
     return redirect("/sub/"+subforum_id)
 
@@ -62,7 +64,9 @@ def discussion(sub_id, disc_id):
     session['url'] = url_for("discussion", sub_id=sub_id, disc_id=disc_id)
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
+    print(disc_id)
     return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, user_id=disc.user_id, sub_id=sub_id, id=disc_id)
+
 
 
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>/new_comment")
@@ -76,9 +80,15 @@ def create_comment():
     content = request.form["content"]
     sub_id = request.form["sub_id"]
     disc_id = request.form["disc_id"]
-    user_id = users.session_user_id()
-    comments.create_new_comment(content, disc_id, user_id)
-    return redirect("/sub/"+sub_id+"/discussion/"+disc_id)
+    if content:
+        print(content)
+        print(sub_id)
+        print(disc_id)
+        user_id = users.session_user_id()
+        comments.create_new_comment(content, disc_id, user_id)
+        return redirect("/sub/"+sub_id+"/discussion/"+disc_id)
+    else:
+        return redirect(session["url"])
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -150,7 +160,8 @@ def profile(id):
     session['url'] = url_for("profile", id=id)
     user = users.get_user_by_id(id)
     activity = helpers.sort_by_date_newest(users.get_user_activity(id))
-    return render_template("profile_overview.html", user=user, activity=activity, sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, timefunctions=timefunctions)
+
+    return render_template("profile_overview.html", user=user, activity=activity, sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
 
 
 @app.route("/profile/<int:id>/about")
@@ -161,10 +172,38 @@ def profile_about(id):
     return render_template("profile_about.html", user=user)
 
 
+@app.route("/profile/<int:id>/subforums")
+def profile_subforums(id):
+    session['url'] = url_for("profile_subforums", id=id)
+    user = users.get_user_by_id(id)
+    subs = subforums.get_list_by_user_id(id)
+
+    return render_template("profile_subforums.html", user=user, subforums=subs)
+
+
+@app.route("/profile/<int:id>/discussions")
+def profile_discussions(id):
+    session['url'] = url_for("profile_discussions", id=id)
+    user = users.get_user_by_id(id)
+    discs = discussions.get_list_by_user_id(id)
+
+    return render_template("profile_discussions.html", user=user, discussions=discs)
+
+
+@app.route("/profile/<int:id>/comments")
+def profile_comments(id):
+    session['url'] = url_for("profile_comments", id=id)
+    user = users.get_user_by_id(id)
+    comnts = comments.get_list_by_user_id(id)
+
+    return render_template("profile_comments.html", user=user, comments=comnts)
+
+
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect(session["url"])
+
 
 @app.context_processor
 def unil_processor():

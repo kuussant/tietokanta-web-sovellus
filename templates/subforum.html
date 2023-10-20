@@ -2,40 +2,48 @@
 {% block title %}{{ title }}{% endblock %}
 {% block login %}<a href="/login">Log in</a>{% endblock %}
 {% block content %}
-<h2>{{ title }}</h2>
-<p>
-    {{ content }}
-</p>
-<div>
-    <ul class="nav col-12 col-md-auto mb-2 justify-content-center">
-        <li>
-            <a class="nav-link px-2 link-secondary" href="/sub/{{ id }}/new_discussion">Create discussion</a>
-        </li>
-        <li>
-            <a class="nav-link px-2 link-dark" href="/sub/{{ id }}">Follow</a>
-        </li>
-    </ul>
-</div>
-{% if discussions %}
 <div class="container">
-    {% for discussion in discussions %}
-    <hr>
+    <h2>{{ title }}</h2>
+    <p>
+        {{ content }}
+    </p>
+
     <div>
-        <p>
-        <small>
-        <a href="/profile/{{ discussion.user_id }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
-        </small>
-        </p>
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center">
+            <li>
+                <a class="nav-link px-2 link-secondary" href="/sub/{{ id }}/new_discussion">Create discussion</a>
+            </li>
+            <li>
+                <a class="nav-link px-2 link-dark" href="/sub/{{ id }}">Follow</a>
+            </li>
+        </ul>
     </div>
-    <h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
-    <small>
-        {{ discussion.content }}
-    </small>
+
+    <hr>
+    
+    {% if discussions %}
+    {% for discussion in discussions %}
+    <div class="container">
+        <div>
+            <p>
+            <small>
+            <a href="/profile/{{ discussion.user_id }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
+            </small>
+            </p>
+        </div>
+        <h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+        <div>
+            <small>
+                {{ discussion.content }}
+            </small>
+        </div>
+        <hr>
+    </div>
     {% endfor %}
-</div>
-{% else %}
-<div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
-    <b>No discussions</b>
+    {% else %}
+    <div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
+        <b>No discussions</b>
+    </div>
 </div>
 {% endif %}
 {% endblock %}

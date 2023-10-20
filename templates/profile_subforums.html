@@ -1,0 +1,28 @@
+{% extends "profile_layout.html" %}
+{% block profile_title %}Subforums{% endblock%}
+
+{% block profile_content %}
+{% if subforums %}
+<div class="container">
+    {% for subforum in subforums %}
+    <div>
+        <p>
+        <small>
+        <a href="/profile/{{ user.id }}">{{ user.username }}</a> created {{ get_time_ago(subforum.created_at)}}
+        </small>
+        </p>
+    </div>
+    <div>
+        <h5>/sub/{{ subforum.id }} <a href="/sub/{{ subforum.id }}">{{ subforum.title }}</a></h5>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
+    <b>No created subforums</b>
+</div>
+{% endif %}
+
+{% endblock %}

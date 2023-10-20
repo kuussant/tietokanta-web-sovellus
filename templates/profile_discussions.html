@@ -1,0 +1,31 @@
+{% extends "profile_layout.html" %}
+{% block profile_title %}Discussions{% endblock%}
+
+{% block profile_content %}
+{% if discussions %}
+<div class="container">
+    {% for discussion in discussions %}
+    <div>
+        <p>
+        <small>
+        <a href="/sub/{{ discussion.subforum_id }}">/sub/{{ discussion.subforum_id }}</a> &#x2022 <a href="/profile/{{ user.id }}">{{ user.username }}</a> posted {{ get_time_ago(discussion.created_at)}}
+        </small>
+        </p>
+    </div>
+    <div>
+        <h5><a href="/sub/{{ discussion.subforum_id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+    </div>
+    <small>
+        {{ discussion.content }}
+    </small>
+    <hr>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
+    <b>No created discussions</b>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -2,15 +2,20 @@
 {% block title %}New discussion{% endblock %}
 {% block content %}
 {% if session.user %}
-<form action="/create_discussion" method="post">
-    Topic: <br>
-    <textarea name="title" rows="3" cols="40"></textarea>
-    <br>
-    Content: <br>
-    <textarea name="content" rows="20" cols="60"></textarea>
-    <br>
-    <input type="submit" value="Create">
-    <input type="hidden" name="sub_id" value="{{ id }}">
+<form action="/create_discussion" method="POST">
+    <div class="form-group col-6">
+        <label for="textareaTitle">Title</label>
+        <textarea type="text" class="form-control" name="title" id="textareaTitle" rows="1"></textarea>
+    </div>
+    <div class="form-group col-6">
+        <label for="">Content</label>
+        <textarea type="password" class="form-control" name="content" id="textareaContent" rows="4"></textarea>
+    </div>
+    <div class="form-group col-6">
+        <a href="/sub/{{ id }}"><button class="btn btn-outline-secondary" type="button" name="register">Cancel</button></a>
+        <input type="hidden" name="sub_id" value="{{ id }}">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
 </form>
 {% else %}
 You must log in to create a new discussion
