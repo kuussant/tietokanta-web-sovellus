@@ -92,6 +92,17 @@ def get_user_discussions(id):
     discussions = result.fetchall()
     return discussions
 
+def get_user_activity(id):
+    
+    tables = ["subforums", "discussions", "comments"]
+    activity = []
+
+    for table in tables:
+        sql = f"SELECT * FROM {table} WHERE user_id=:id"
+        result = db.db.session.execute(db.text(sql), {"id":id})
+        activity += result.fetchall()
+
+    return activity
 
 def does_username_exist(username):
     sql = "SELECT 1 FROM users WHERE username=:username"

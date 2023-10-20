@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Profile/{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-center">
+    <h3><b>{{ user.username }} - {% block profile_title %}{% endblock %}</b></h3>
+</div>
+<ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 py-4">
+    <li>
+        <a class="nav-link px-2 link-secondary" href="/profile/{{ user.id }}">Overview</a>
+    </li>
+    <li>
+        <a class="nav-link px-2 link-dark" href="/profile/{{ id }}/subforums">Subforums</a>
+    </li>
+    <li>
+        <a class="nav-link px-2 link-dark" href="/profile/{{ id }}/discussions">Discussions</a>
+    </li>
+    <li>
+        <a class="nav-link px-2 link-dark" href="/profile/{{ id }}/comments">Comments</a>
+    </li>
+    <li>
+        <a class="nav-link px-2 link-dark" href="/profile/{{ user.id }}/about">About</a>
+    </li>
+</ul>
+<hr>
+{% block profile_content %}{% endblock %}
+{% endblock %}

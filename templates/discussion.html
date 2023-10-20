@@ -4,19 +4,21 @@
 <p>
     <b>{{ title }}</b>
 </p>
-Started: {{ disc_username }}
+Started: <a href="/profile/{{ user_id }}">{{ get_user_by_id(user_id).username }}</a>
 <p>
     {{ content }}
 </p>
 <hr>
 <a href="/sub/{{ sub_id }}/discussion/{{ id }}/new_comment">Add comment</a>
-<p>
+<hr>
 {% if comments %}
 {% for comment in comments %}
-<hr>
-<a href="/user/{{ comment.user_id }}">{{ comment.user_id }}</a> {{ comment.created_at }}
+<small>
+    {% if user_id == comment.user_id %}<b>OP</b>{% endif %} <a href="/profile/{{ comment.user_id }}">{{ get_user_by_id(comment.user_id).username }}</a> &#x2022 {{ get_time_ago(comment.created_at)}}
+</small>
 <br>
 {{ comment.content }}
+<hr>
 {% endfor %}
 {% else %}
 No comments

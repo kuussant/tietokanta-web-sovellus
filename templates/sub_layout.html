@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Forums - {% block title %}{% endblock %}</title>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Forums - {% block title %}{% endblock %}</title>
+</head>
+
 <div class="container">
-    <h2>Forums {% block page %}-{% endblock %}</h2>
-    <div class="row">
-        <div class="col-sm">
-            <a href="/">Front page</a>
-        </div>
-    </div>
-    <hr>
-    {% block content %}{% endblock content %}
-    <hr>
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a class="d-flex alight-items-center col-md-3 mb-2 mb-md-0 test-dark" href="/">
+            <h1>Forums</h1>
+        </a>
+    </header>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
 </div>

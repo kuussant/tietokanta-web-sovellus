@@ -1,0 +1,9 @@
+{% extends "profile_layout.html" %}
+{% block profile_title %}About{% endblock%}
+{% block profile_content %}
+Username: {{ user.username }}
+<br>
+User ID: {{ user.id }}
+<br>
+Created at: {{ user.created_at }}
+{% endblock %}

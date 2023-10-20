@@ -2,37 +2,37 @@
 {% block title %}{{ title }}{% endblock %}
 {% block login %}<a href="/login">Log in</a>{% endblock %}
 {% block content %}
+<h2>{{ title }}</h2>
+<p>
+    {{ content }}
+</p>
+<div>
+    <ul class="nav col-12 col-md-auto mb-2 justify-content-center">
+        <li>
+            <a class="nav-link px-2 link-secondary" href="/sub/{{ id }}/new_discussion">Create discussion</a>
+        </li>
+        <li>
+            <a class="nav-link px-2 link-dark" href="/sub/{{ id }}">Follow</a>
+        </li>
+    </ul>
+</div>
+{% if discussions %}
 <div class="container">
-    <h2>{{ title }}</h2>
-    <p>
-        {{ content }}
-    </p>
-    <div class="row">
-        <div class="col-sm">
-            Moderator: {{ sub_username }}
-        </div>
-        <div class="col-sm">
-            <a href="/sub/{{ id }}/new_discussion">Create new discussion</a>
-        </div>
-        <div class="col-sm">
-            {% if follows %}
-            <a href="/unfollow/{{ id }}">Unfollow</a>
-            {% else %}
-            <a href="/follow/{{ id }}">Follow</a>
-            {% endif %}
-        </div>
-    </div>
     {% for discussion in discussions %}
-<hr>
-<h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
-<div class="row">
-    <div class="col">
-        Started: <a href="/profile/{{ discussion.user_id }}">{{ discussion.username }}</a>
+    <hr>
+    <div>
+        <p>
+        <small>
+        <a href="/profile/{{ discussion.user_id }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
+        </small>
+        </p>
     </div>
-    <div class="col">    
-        Created at: {{ discussion.created_at }}
-    </div>
+    <h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+    {% endfor %}
 </div>
-{% endfor %}
+{% else %}
+<div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
+    <b>No discussions</b>
 </div>
+{% endif %}
 {% endblock %}

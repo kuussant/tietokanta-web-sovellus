@@ -1,38 +1,10 @@
-import re
-
 from datetime import datetime
-
-def is_pass_secure(password):
-    lower_ok = False
-    upper_ok = False
-    digit_ok = False
-    special_ok = False
-
-    if re.search("[a-z]+", password):
-        lower_ok = True
-    if re.search("[A-Z]+", password):
-        upper_ok = True
-    if re.search("[0-9]+", password):
-        digit_ok = True
-    if re.search("[^0-9a-zA-Z]+", password):
-        special_ok = True
-
-    if lower_ok and upper_ok and digit_ok and special_ok:
-        return True
-    return False
-
-
-def contains_specials(str):
-    regex = "[^0-9a-zA-Z]+"
-    if re.search(regex, str):
-        return True
-    return False
-
-
 def convert_time(time):
 
     current_time = datetime.now()
-
+    #time = "2023-10-14 1:06:13.852441"
+    #current_time = string_to_datetime("2023-10-19 1:06:27.852441")
+    
     delta = current_time-time
 
     seconds = delta.total_seconds()
@@ -76,12 +48,19 @@ def convert_time(time):
         return "Now"
 
     return f"{int(t)} {time_string} ago"
+    
 
-def __by_date(item):
-    return item.created_at
+def string_to_datetime(time):
 
-def sort_by_date_newest(items):
-    return sorted(items, key=__by_date, reverse=True)
+    time_split = time.split(".")[0].split(" ")
+    ymd = time_split[0].split("-")
+    hms = time_split[1].split(":")
 
-def sort_by_date_oldest(items):
-    return sorted(items, key=__by_date, reverse=False)
+    ymdhms = []
+    for t in ymd:
+        ymdhms.append(int(t))
+
+    for t in hms:
+        ymdhms.append(int(t))
+
+    return datetime(ymdhms[0], ymdhms[1], ymdhms[2], ymdhms[3], ymdhms[4], ymdhms[5])

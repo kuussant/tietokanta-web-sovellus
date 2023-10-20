@@ -2,6 +2,10 @@ from app import app
 
 from flask import render_template, redirect, request, url_for, session, flash
 
+from jinja2 import Template
+
+import helpers, timefunctions
+
 import subforums, discussions, messages, users, comments
 
 
@@ -10,7 +14,6 @@ def index():
     session['url'] = url_for("index")
     list = subforums.get_list()
     user_id = users.session_user_id()
-    print("USER ID", user_id)
     return render_template("index.html", subforums=list)
 
 
@@ -59,7 +62,7 @@ def discussion(sub_id, disc_id):
     session['url'] = url_for("discussion", sub_id=sub_id, disc_id=disc_id)
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
-    return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, sub_id=sub_id, id=disc_id)
+    return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, user_id=disc.user_id, sub_id=sub_id, id=disc_id)
 
 
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>/new_comment")
@@ -140,12 +143,35 @@ def register():
 
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
+    sub_type = subforums.ITEM_TYPE
+    disc_type = discussions.ITEM_TYPE
+    comt_type = comments.ITEM_TYPE
+
     session['url'] = url_for("profile", id=id)
     user = users.get_user_by_id(id)
-    return render_template("profile.html", user=user)
+    activity = helpers.sort_by_date_newest(users.get_user_activity(id))
+    return render_template("profile_overview.html", user=user, activity=activity, sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, timefunctions=timefunctions)
+
+
+@app.route("/profile/<int:id>/about")
+def profile_about(id):
+    session['url'] = url_for("profile_about", id=id)
+    user = users.get_user_by_id(id)
+
+    return render_template("profile_about.html", user=user)
 
 
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect(session["url"])
+
+@app.context_processor
+def unil_processor():
+    def get_time_ago(time):
+        return timefunctions.convert_time(time)
+    
+    def get_user_by_id(id):
+        return users.get_user_by_id(id)
+    
+    return dict(get_time_ago=get_time_ago, get_user_by_id=get_user_by_id)
