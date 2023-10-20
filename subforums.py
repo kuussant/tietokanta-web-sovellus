@@ -13,7 +13,7 @@ def get_list():
 
 
 def get_sub(id):
-    sql = "SELECT title, content, followers, created_at, user_id FROM subforums WHERE id=:id"
+    sql = "SELECT * FROM subforums WHERE id=:id"
     result = db.db.session.execute(db.text(sql), {"id":id})
     return result.fetchone()
 

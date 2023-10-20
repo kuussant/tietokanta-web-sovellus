@@ -174,4 +174,10 @@ def unil_processor():
     def get_user_by_id(id):
         return users.get_user_by_id(id)
     
-    return dict(get_time_ago=get_time_ago, get_user_by_id=get_user_by_id)
+    def get_sub_by_id(id):
+        return subforums.get_sub(id)
+    
+    def get_discussion_by_id(id):
+        return discussions.get_discussion(id)
+    
+    return dict(get_time_ago=get_time_ago, get_user_by_id=get_user_by_id, get_sub_by_id=get_sub_by_id, get_discussion_by_id=get_discussion_by_id)

@@ -28,6 +28,9 @@
         </p>
     </div>
     <h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+    <small>
+        {{ discussion.content }}
+    </small>
     {% endfor %}
 </div>
 {% else %}

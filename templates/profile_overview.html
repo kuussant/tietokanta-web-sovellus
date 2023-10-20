@@ -12,7 +12,7 @@
         </p>
     </div>
     <div>
-        <h5>/sub/{{ item.id }} <a href="/sub/{{ item.subforum_id }}/discussion/{{ item.id }}">{{ item.title }}</a></h5>
+        <h5>/sub/{{ item.id }} <a href="/sub/{{ item.id }}">{{ item.title }}</a></h5>
     </div>
     <hr>
 
@@ -33,9 +33,13 @@
     <hr>
 
     {% elif item.item_type == comt_type %}
+    {% set disc = get_discussion_by_id(item.discussion_id) %}
+    {% set sub = get_sub_by_id(disc.subforum_id) %}
     <div>
         <small>
-        <a href="/sub/{{ item.discussion_id }}">/sub/{{ item.discussion_id }}</a> &#x2022 <a href="/profile/{{ user.id }}">{{ user.username }}</a> commented {{ get_time_ago(item.created_at)}}
+        <a href="/sub/{{ sub.id }}">/sub/{{ sub.id }}</a> &#x2022 <a href="/sub/{{ sub.id }}/discussion/{{ disc.id }}">{{ disc.title }}</a>
+        <br>
+        <a href="/profile/{{ user.id }}">{{ user.username }}</a> commented {{ get_time_ago(item.created_at)}}
         </small>
     </div>
     <small>
