@@ -6,19 +6,19 @@
 </div>
 <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 py-4">
     <li>
-        <a class="nav-link px-2 link-secondary" href="/profile/{{ user.id }}">Overview</a>
+        <a class="nav-link px-2 link-secondary" href="{{ url_for('profile', id=user.id) }}">Overview</a>
     </li>
     <li>
-        <a class="nav-link px-2 link-dark" href="/profile/{{ user.id }}/subforums">Subforums</a>
+        <a class="nav-link px-2 link-dark" href="{{ url_for('profile_subforums', id=user.id) }}">Subforums</a>
     </li>
     <li>
-        <a class="nav-link px-2 link-dark" href="/profile/{{ user.id }}/discussions">Discussions</a>
+        <a class="nav-link px-2 link-dark" href="{{ url_for('profile_discussions', id=user.id) }}">Discussions</a>
     </li>
     <li>
-        <a class="nav-link px-2 link-dark" href="/profile/{{ user.id }}/comments">Comments</a>
+        <a class="nav-link px-2 link-dark" href="{{ url_for('profile_comments', id=user.id) }}">Comments</a>
     </li>
     <li>
-        <a class="nav-link px-2 link-dark" href="/profile/{{ user.id }}/about">About</a>
+        <a class="nav-link px-2 link-dark" href="{{ url_for('profile_about', id=user.id) }}">About</a>
     </li>
 </ul>
 <hr>

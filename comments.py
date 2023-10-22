@@ -1,8 +1,5 @@
 import db
 
-import users
-
-
 ITEM_TYPE = "comment"
 
 

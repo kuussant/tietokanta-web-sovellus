@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block title %}Users{% endblock %}
+{% block page %}Front page{% endblock %}
+{% block content %}
+<div class="container">
+    <form class="col py-4" action="/result">
+        <div class="row">
+            <div class="col">
+                <input type="search" class="form-control" name="query" placeholder="Search...">
+            </div>
+            <select class="form-select" aria-label="Default select example" name="sort_by">
+                <option value="alphabet">Alphabetical</option>
+                <option value="oldest">Created at</option>
+                <option value="most_followed">Followers</option>
+            </select>
+            <select class="form-select" aria-label="Default select example" name="sort_by">
+                <option value="newest">Descending</option>
+                <option value="oldest">Ascending</option>
+            </select>
+        </div>
+        <br>
+    </form>
+
+    {% if users %}
+    <div class="container">
+        {% for user in users %}
+        <div class="container row">
+            <div class="col">
+                <a href="{{ url_for('profile', id=user.id) }}">{{ user.username }}#{{ user.id }}</a>
+            </div>
+            <div>
+                Followers:
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+    {% else %}
+    No users
+    {% endif %}
+</div>
+{% endblock %}

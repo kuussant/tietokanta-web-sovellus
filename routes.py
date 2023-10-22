@@ -12,10 +12,14 @@ current_template = []
 
 @app.route("/")
 def index():
+    sub_type = subforums.ITEM_TYPE
+    disc_type = discussions.ITEM_TYPE
+
     session['url'] = url_for("index")
-    list = subforums.get_list()
-    user_id = users.session_user_id()
-    return render_template("index.html", subforums=list)
+    sub_list = subforums.get_list()
+    disc_list = discussions.get_list()
+
+    return render_template("index.html", featuring=helpers.sort_by_date_newest(sub_list+disc_list), sub_type=sub_type, disc_type=disc_type)
 
 
 @app.route("/sub/<int:id>")
@@ -24,7 +28,7 @@ def sub(id):
     print("WENT TO SUB", id)
     list = discussions.get_list_by_sub_id(id)
     sub = subforums.get_sub(id)
-    return render_template("subforum.html", title=sub.title, content=sub.content, sub_username=users.get_username(sub.user_id), discussions=list, id=id)
+    return render_template("subforum.html", sub=sub, sub_admin=users.get_username(sub.user_id), discussions=list)
 
 
 @app.route("/new_sub")
@@ -65,7 +69,7 @@ def discussion(sub_id, disc_id):
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
     print(disc_id)
-    return render_template("discussion.html", title=disc.title, content=disc.content, comments=list, user_id=disc.user_id, sub_id=sub_id, id=disc_id)
+    return render_template("discussion.html", discussion=disc, comments=list, user_id=disc.user_id, sub_id=sub_id)
 
 
 
@@ -197,6 +201,50 @@ def profile_comments(id):
     comnts = comments.get_list_by_user_id(id)
 
     return render_template("profile_comments.html", user=user, comments=comnts)
+
+
+@app.route("/users")
+def explore_users():
+    session['url'] = url_for("explore_users")
+    list = users.get_list()
+    return render_template("users.html", users=list)
+
+
+@app.route("/subforums")
+def explore_subforums():
+    session['url'] = url_for("explore_subforums")
+    list = subforums.get_list()
+    return render_template("subforums.html", subforums=list)
+
+
+@app.route("/discussions")
+def explore_discussions():
+    session['url'] = url_for("explore_subforums")
+    list = discussions.get_list()
+    return render_template("discussions.html", discussions=list)
+
+@app.route("/result")
+def result():
+    query = request.args["query"]
+    option = request.args["sort_by"]
+    print(query, option)
+    sort_option = ""
+
+    if option == "newest":
+        sort_option = "created_at DESC"
+
+    elif option == "oldest":
+        sort_option = "created_at ASC"
+
+    elif option == "most_followed":
+        #########################
+        sort_option = "followers"
+
+    #sql = f"SELECT id, content FROM messages WHERE content LIKE :query ORDER BY {sort_option}"
+    #result = db.session.execute(sql, {"query":"%"+query+"%"})
+    #messages = result.fetchall()
+    print("SORT OPTION:", sort_option)
+    return render_template("index.html")
 
 
 @app.route("/logout")

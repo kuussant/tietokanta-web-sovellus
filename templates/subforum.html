@@ -3,18 +3,23 @@
 {% block login %}<a href="/login">Log in</a>{% endblock %}
 {% block content %}
 <div class="container">
-    <h2>{{ title }}</h2>
+    Admin: <a href="{{ url_for('profile', id=sub.user_id) }}">{{ sub_admin }}</a> 
+    <br>
+    Created: {{ get_time_ago(sub.created_at) }}
     <p>
-        {{ content }}
+        <h2>{{ sub.title }}</h2>
+    </p>
+    <p>
+        {{ sub.content }}
     </p>
 
     <div>
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center">
             <li>
-                <a class="nav-link px-2 link-secondary" href="/sub/{{ id }}/new_discussion">Create discussion</a>
+                <a class="nav-link px-2 link-secondary" href="{{ url_for('new_discussion', id=sub.id) }}">Create discussion</a>
             </li>
             <li>
-                <a class="nav-link px-2 link-dark" href="/sub/{{ id }}">Follow</a>
+                <a class="nav-link px-2 link-dark" href="{{ url_for('sub', id=sub.id) }}">Follow</a>
             </li>
         </ul>
     </div>
@@ -27,11 +32,11 @@
         <div>
             <p>
             <small>
-            <a href="/profile/{{ discussion.user_id }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
+            <a href="{{ url_for('profile', id=discussion.user_id) }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
             </small>
             </p>
         </div>
-        <h5><a href="/sub/{{ id }}/discussion/{{ discussion.id }}">{{ discussion.title }}</a></h5>
+        <h5><a href="{{ url_for('discussion', sub_id=id, disc_id=discussion.id) }}">{{ discussion.title }}</a></h5>
         <div>
             <small>
                 {{ discussion.content }}

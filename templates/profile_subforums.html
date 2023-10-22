@@ -8,12 +8,12 @@
     <div>
         <p>
         <small>
-        <a href="/profile/{{ user.id }}">{{ user.username }}</a> created {{ get_time_ago(subforum.created_at)}}
+        <a href="{{ url_for('profile', id=user.id) }}">{{ user.username }}</a> created {{ get_time_ago(subforum.created_at)}}
         </small>
         </p>
     </div>
     <div>
-        <h5>/sub/{{ subforum.id }} <a href="/sub/{{ subforum.id }}">{{ subforum.title }}</a></h5>
+        <h5>/sub/{{ subforum.id }} <a href="{{ url_for('sub', id=subforum.id) }}">{{ subforum.title }}</a></h5>
     </div>
     <hr>
     {% endfor %}

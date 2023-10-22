@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block title %}Front page{% endblock %}
+{% block page %}Front page{% endblock %}
+{% block content %}
+<div class="container">
+    <form class="col py-4" action="/result">
+        <div class="row">
+            <div class="col">
+                <input type="search" class="form-control" name="query" placeholder="Search...">
+            </div>
+            <select class="form-select" aria-label="Default select example" name="sort_by">
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="most_followed">Most followed</option>
+            </select>
+        </div>
+        <br>
+    </form>
+
+    {% if subforums %}
+    <div class="container">
+        {% for subforum in subforums %}
+        <div>
+            <p>
+            <small>
+            <a href="{{ url_for('profile', id=subforum.user_id) }}">{{ subforum.username }}</a> created {{ get_time_ago(subforum.created_at)}}
+            </small>
+            </p>
+        </div>
+        <div>
+            <h5>/sub/{{ subforum.id }} <a href="{{ url_for('sub', id=subforum.id) }}">{{ subforum.title }}</a></h5>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+    {% else %}
+    No subforums
+    {% endif %}
+</div>
+{% endblock %}

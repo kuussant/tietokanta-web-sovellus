@@ -9,9 +9,9 @@
     {% set sub = get_sub_by_id(disc.subforum_id) %}
     <div>
         <small>
-        <a href="/sub/{{ sub.id }}">/sub/{{ sub.id }}</a> &#x2022 <a href="/sub/{{ sub.id }}/discussion/{{ disc.id }}">{{ disc.title }}</a>
+        <a href="{{ url_for('sub', id=sub.id) }}">/sub/{{ sub.id }}</a> &#x2022 <a href="{{ url_for('discussion', sub_id=sub.id, disc_id=disc.id) }}">{{ disc.title }}</a>
         <br>
-        <a href="/profile/{{ user.id }}">{{ user.username }}</a> commented {{ get_time_ago(comment.created_at)}}
+        <a href="{{ url_for('profile', id=user.id) }}">{{ user.username }}</a> commented {{ get_time_ago(comment.created_at)}}
         </small>
     </div>
     <small>

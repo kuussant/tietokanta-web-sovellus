@@ -16,6 +16,6 @@
 {% else %}
 You must log in to create a new comment
 <p>
-<a href="/login">Log in</a>
+<a href="{{ url_for('login') }}">Log in</a>
 {% endif %}
 {% endblock %}

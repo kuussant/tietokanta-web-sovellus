@@ -3,30 +3,48 @@
 {% block title %}Front page{% endblock %}
 {% block page %}Front page{% endblock %}
 {% block content %}
-{% if session.user %}
-<a href="/new_sub">Create new subforum</a>
-{% endif %}
-<hr>
-{% if subforums %}
 <div class="container">
-    {% for subforum in subforums %}
-    <div class="py-3">
-        <div class="col-sm">
-            <h4><a href="/sub/{{ subforum.id }}">{{ subforum.title }}</a></h4>
-        </div>
-        <div class="col-sm">
-            {{ subforum.followers }} followers
-        </div>
-        <div class="col-sm">
-            Created: {{ get_time_ago(subforum.created_at) }}
-            <br>
-            Admin: <a href="/profile/{{ subforum.user_id }}">{{ subforum.username }}</a>
-        </div>
+    {% if session.user %}
+    <div class="py-4 px-2">
+        <a href="{{ url_for('new_sub') }}"><button class="btn btn-primary">Create new subforum</button></a>
     </div>
-    <hr>
-    {% endfor %}
+    {% endif %}
+    {% if featuring %}
+    <div class="container">
+        {% for item in featuring %}
+        {% if item.item_type == sub_type %}
+        <div>
+            <p>
+            <small>
+            <a href="{{ url_for('profile', id=item.user_id) }}">{{ item.username }}</a> created {{ get_time_ago(item.created_at)}}
+            </small>
+            </p>
+        </div>
+        <div>
+            <h5>/sub/{{ item.id }} <a href="{{ url_for('sub', id=item.id) }}">{{ item.title }}</a></h5>
+        </div>
+        <hr>
+    
+        {% elif item.item_type == disc_type %}
+        <div>
+            <p>
+            <small>
+            <a href="{{ url_for('sub', id=item.subforum_id) }}">/sub/{{ item.subforum_id }}</a> &#x2022 <a href="{{ url_for('profile', id=item.user_id) }}">{{ item.username }}</a> posted {{ get_time_ago(item.created_at)}}
+            </small>
+            </p>
+        </div>
+        <div>
+            <h5><a href="{{ url_for('discussion', sub_id=item.subforum_id, disc_id=item.id) }}">{{ item.title }}</a></h5>
+        </div>
+        <small>
+            {{ item.content }}
+        </small>
+        <hr>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    No subforums
+    {% endif %}
 </div>
-{% else %}
-No subforums
-{% endif %}
 {% endblock %}

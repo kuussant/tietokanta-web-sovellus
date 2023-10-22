@@ -3,7 +3,7 @@
 {% block content %}
 {% if session.user %}
 You have logged in as {{ session.user[0] }}
-<a href="/logout">Log out</a>
+<a href="{{ url_for('logout') }}">Log out</a>
 {% else %}
 {% if error %}
     <p class="error" style="color: red;"><strong>{{ error }}</strong>

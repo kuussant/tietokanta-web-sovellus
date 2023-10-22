@@ -40,8 +40,11 @@ def register(username, password):
     return login(username, password)
 
 
-def profile():
-    pass
+def get_list():
+    sql = "SELECT * FROM users ORDER BY username"
+    result = db.db.session.execute(db.text(sql))
+
+    return result.fetchall()
 
 
 def logout():
