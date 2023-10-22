@@ -90,7 +90,7 @@ def sub_unfollow(id):
 
 @app.route("/delete/sub/<int:id>")
 def sub_delete(id):
-    return render_template("confirm.html", item=subforums.get_sub(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+    return render_template("confirm.html", item=subforums.get_sub(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, user_type=user_type)
 
 
 ########################## DISCUSSIONS #######################################
@@ -134,7 +134,7 @@ def new_comment(sub_id, disc_id):
 def discussion_delete(id):
     print("DISCUSSING", discussions.get_discussion(id).item_type)
 
-    return render_template("confirm.html", item=discussions.get_discussion(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+    return render_template("confirm.html", item=discussions.get_discussion(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, user_type=user_type)
 
 
 ########################## COMMENTS #######################################
@@ -158,7 +158,7 @@ def create_comment():
 
 @app.route("/delete/comment/<int:id>")
 def comment_delete(id):
-    return render_template("confirm.html", item=comments.get_comment(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+    return render_template("confirm.html", item=comments.get_comment(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, user_type=user_type)
 
 
 ########################## USERS #######################################
@@ -225,12 +225,12 @@ def register():
 
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
-
-    url_before()
     session['url'] = url_for("profile", id=id)
     user = users.get_user_by_id(id)
     activity = helpers.sort_by_date_newest(users.get_user_activity(id))
 
+    print("=====================================================================", id)
+    
     return render_template("profile_overview.html", user=user, activity=activity, sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
 
 
@@ -281,7 +281,8 @@ def profile_following(id):
 @app.route("/delete/profile/<int:id>")
 def profile_delete(id):
     item = users.get_user_by_id(id)
-    return render_template("confirm.html", item=item)
+    
+    return render_template("confirm.html", item=item, sub_type=sub_type, disc_type=disc_type, comt_type=comt_type, user_type=user_type)
 
 
 ########################## EXPLORE #######################################
@@ -347,7 +348,7 @@ def confirm_delete():
 
     session_user_id = users.session_user_id()
 
-    print(item_id, item_type)
+    print(item_id, item_type, user_type)
 
     if item_type == sub_type:
         subforums.delete(item_id, session_user_id)
@@ -358,10 +359,10 @@ def confirm_delete():
     elif item_type == comt_type:
         comments.delete(item_id, session_user_id)
     
-    elif item_type == users.ITEM_TYPE:
-        pass
+    elif item_type == user_type:
+        users.delete(item_id, session_user_id)
     
-    return redirect(session["url_before"])
+    return redirect("/")
 
 
 def url_before():

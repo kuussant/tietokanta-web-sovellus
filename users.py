@@ -32,8 +32,8 @@ def login(username, password):
 def register(username, password):
     try:
         hash_value = generate_password_hash(password)
-        sql = "INSERT INTO users (username, password, created_at, is_admin, visible) VALUES (:username, :password, NOW(), FALSE, TRUE)"
-        db.db.session.execute(db.text(sql), {"username":username, "password":hash_value})
+        sql = "INSERT INTO users (item_type, username, password, created_at, is_admin, visible) VALUES (:item_type, :username, :password, NOW(), FALSE, TRUE)"
+        db.db.session.execute(db.text(sql), {"item_type": ITEM_TYPE, "username":username, "password":hash_value})
         db.db.session.commit()
     except:
         return False
@@ -73,42 +73,42 @@ def is_admin(id):
 
 
 def get_username(id):
-    sql = "SELECT username FROM users WHERE id=:id"
+    sql = "SELECT username FROM users WHERE id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
     username = result.fetchone()
     return username[0]
 
 
 def get_user_by_id(id):
-    sql = "SELECT * FROM users WHERE id=:id"
+    sql = "SELECT * FROM users WHERE id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
     user = result.fetchone()
     return user
 
 
 def get_user_comments(id):
-    sql = "SELECT * FROM comments WHERE user_id=:id"
+    sql = "SELECT * FROM comments WHERE user_id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
     comments = result.fetchall()
     return comments
 
 
 def get_user_subforums(id):
-    sql = "SELECT * FROM subforums WHERE user_id=:id"
+    sql = "SELECT * FROM subforums WHERE user_id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
     subforums = result.fetchall()
     return subforums
 
 
 def get_user_discussions(id):
-    sql = "SELECT * FROM discussions WHERE user_id=:id"
+    sql = "SELECT * FROM discussions WHERE user_id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
     discussions = result.fetchall()
     return discussions
 
 def get_user_activity(id):
     
-    tables = ["subforums", "discussions", "comments"]
+    tables = ["subforums", "discussions"]
     activity = []
 
     for table in tables:
@@ -116,7 +116,14 @@ def get_user_activity(id):
         result = db.db.session.execute(db.text(sql), {"id":id})
         activity += result.fetchall()
 
-    print("******************************************************************************ACTIVITY")
+    for item in activity:
+        print(item)
+        print()
+        print()
+        print()
+        print()
+        print()
+        
     return activity
 
 def does_username_exist(username):
@@ -164,5 +171,15 @@ def search_by(query, sort_by, order_by):
     return result.fetchall()
 
 
-def delete(id):
-    pass
+def delete(user_id1, user_id2):
+
+    for table in ["comments", "discussions", "subforums"]:
+        sql = f"UPDATE {table} SET visible=False WHERE user_id=:user_id1"
+
+        db.db.session.execute(db.text(sql), {"user_id1":user_id1})
+        db.db.session.commit()
+    
+    sql = f"UPDATE users SET visible=False WHERE id=:user_id1"
+    db.db.session.execute(db.text(sql), {"user_id1":user_id1})
+    db.db.session.commit()
+    logout()

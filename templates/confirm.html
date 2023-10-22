@@ -50,7 +50,16 @@
             {{ item.content }}
         </small>
         <hr>
-    
+        {% elif item.item_type == user_type %}
+        <div class="container">
+            <div class="container row">
+                <div class="col">
+                    <h2><a href="{{ url_for('profile', id=item.id) }}">{{ item.username }}#{{ item.id }}</a></h2>
+                </div>
+            </div>
+        </div>
+        <hr>
+
         {% endif %}
         <input type="hidden" name="item_id" value="{{ item.id }}">
         <input type="hidden" name="item_type" value="{{ item.item_type }}">

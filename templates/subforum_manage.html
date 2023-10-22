@@ -1,6 +1,6 @@
 {% extends "subforum.html" %}
 {% block sub_content %}
-{% if get_session_user_id %}
+{% if sub.user_id == get_session_user_id() or get_is_admin(get_session_user_id()) %}
 <div class="container">
     <form action="{{ url_for('update_sub', id=sub.id) }}" method="POST">
         <div class="form-group">

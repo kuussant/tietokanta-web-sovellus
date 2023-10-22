@@ -1,4 +1,4 @@
-CREATE TABLE users (id SERIAL PRIMARY KEY, username TEXT UNIQUE, password TEXT, created_at TIMESTAMP, is_admin BOOLEAN, visible BOOLEAN);
+CREATE TABLE users (id SERIAL PRIMARY KEY, item_type TEXT, username TEXT UNIQUE, password TEXT, created_at TIMESTAMP, is_admin BOOLEAN, visible BOOLEAN);
 CREATE TABLE subforums (id SERIAL PRIMARY KEY, item_type TEXT, title TEXT, content TEXT, category TEXT, followers INTEGER, created_at TIMESTAMP, user_id INTEGER REFERENCES users, visible BOOLEAN);
 CREATE TABLE discussions (id SERIAL PRIMARY KEY, item_type TEXT, title TEXT, content TEXT, created_at TIMESTAMP, subforum_id INTEGER REFERENCES subforums, user_id INTEGER REFERENCES users, visible BOOLEAN);
 CREATE TABLE comments (id SERIAL PRIMARY KEY, item_type TEXT, content TEXT, created_at TIMESTAMP, discussion_id INTEGER REFERENCES discussions, comment_id INTEGER REFERENCES comments, user_id INTEGER REFERENCES users, visible BOOLEAN);

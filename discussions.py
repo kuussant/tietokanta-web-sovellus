@@ -53,6 +53,10 @@ def search_by(query, order_by):
 
 
 def delete(disc_id, user_id):
-    sql = f"UPDATE discussions SET visible=False WHERE id=:disc_id AND user_id=:user_id OR (SELECT is_admin FROM users WHERE id=:user_id)"
+    sql = "UPDATE comments SET visible=FALSE WHERE discussion_id=:disc_id"
+    db.db.session.execute(db.text(sql), {"disc_id":disc_id})
+    db.db.session.commit()
+
+    sql = "UPDATE discussions SET visible=False WHERE id=:disc_id AND user_id=:user_id OR (SELECT is_admin FROM users WHERE id=:user_id)"
     db.db.session.execute(db.text(sql), {"user_id":user_id, "disc_id":disc_id})
     db.db.session.commit()

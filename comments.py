@@ -19,6 +19,7 @@ def get_list_by_user_id(id):
 def get_comment(id):
     sql = "SELECT * FROM comments WHERE id=:id AND visible=TRUE"
     result = db.db.session.execute(db.text(sql), {"id":id})
+    
     return result.fetchone()
 
 

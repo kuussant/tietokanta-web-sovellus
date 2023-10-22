@@ -7,5 +7,14 @@
     User ID: {{ user.id }}
     <br>
     Created at: {{ user.created_at }}
+
+    {% set session_user_id = get_session_user_id() %}
+    {% set is_admin = get_is_admin(session_user_id) %}
+    {% if user.id == get_session_user_id() or is_admin %}
+    <div class="py-4">
+        <a href="{{ url_for('profile_delete', id=user.id) }}"><button type="button" class="btn btn-danger">Delete profile</button></a>
+    </div>
+        
+    {% endif %}
 </div>
 {% endblock %}
