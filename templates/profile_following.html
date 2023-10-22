@@ -1,0 +1,27 @@
+{% extends "profile_layout.html" %}
+{% block profile_title %}Following{% endblock%}
+
+{% block profile_content %}
+{% if subforums %}
+<div class="container">
+    {% for subforum in subforums %}
+    <div>
+        <p>
+        <small>
+        <a href="{{ url_for('profile', id=subforum.user_id) }}">{{ get_user_by_id(subforum.user_id).username }}</a> created {{ get_time_ago(subforum.created_at)}}
+        </small>
+        </p>
+    </div>
+    <div>
+        <h5>/sub/{{ subforum.id }} <a href="{{ url_for('sub', id=subforum.id) }}">{{ subforum.title }}</a></h5>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
+    <b>User doesn't follow any subforums</b>
+</div>
+{% endif %}
+{% endblock %}

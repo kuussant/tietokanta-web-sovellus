@@ -9,15 +9,15 @@
             <div class="col">
                 <input type="search" class="form-control" name="query" placeholder="Search...">
             </div>
-            <select class="form-select" aria-label="Default select example" name="sort_by">
-                <option value="alphabet">Alphabetical</option>
-                <option value="oldest">Created at</option>
-                <option value="most_followed">Followers</option>
+            <select class="form-select" name="sort_by">
+                <option value="created_at">Created at</option>
+                <option value="followers">Followers</option>
             </select>
-            <select class="form-select" aria-label="Default select example" name="sort_by">
-                <option value="newest">Descending</option>
-                <option value="oldest">Ascending</option>
+            <select class="form-select" name="order_by">
+                <option value="asc">Descending</option>
+                <option value="desc">Ascending</option>
             </select>
+            <input type="hidden" name="item_type" value="user">
         </div>
         <br>
     </form>

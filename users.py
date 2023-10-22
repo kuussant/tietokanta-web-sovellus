@@ -10,6 +10,7 @@ USERNAME_MAX = 20
 PASSWORD_MIN = 6
 PASSWORD_MAX = 100
 
+ITEM_TYPE = "user"
 
 def login(username, password):
     sql = "SELECT id, password FROM users WHERE username=:username"
@@ -31,7 +32,7 @@ def login(username, password):
 def register(username, password):
     try:
         hash_value = generate_password_hash(password)
-        sql = "INSERT INTO users (username, password, created_at) VALUES (:username, :password, NOW())"
+        sql = "INSERT INTO users (username, password, created_at, is_admin, visible) VALUES (:username, :password, NOW(), FALSE, TRUE)"
         db.db.session.execute(db.text(sql), {"username":username, "password":hash_value})
         db.db.session.commit()
     except:
@@ -59,6 +60,16 @@ def session_user_id():
 def session_username():
     user = session.get("user", 0)
     return user[0] if user != 0 else None
+
+def is_admin(id):
+    sql = "SELECT id FROM users WHERE id=:id AND is_admin=TRUE"
+    result = db.db.session.execute(db.text(sql), {"id":id})
+    val = result.fetchone()
+
+    if val:
+        print("IS TRUE")
+        return True
+    return False
 
 
 def get_username(id):
@@ -101,10 +112,11 @@ def get_user_activity(id):
     activity = []
 
     for table in tables:
-        sql = f"SELECT * FROM {table} WHERE user_id=:id"
+        sql = f"SELECT * FROM {table} WHERE user_id=:id AND visible=TRUE"
         result = db.db.session.execute(db.text(sql), {"id":id})
         activity += result.fetchall()
 
+    print("******************************************************************************ACTIVITY")
     return activity
 
 def does_username_exist(username):
@@ -131,3 +143,26 @@ def is_password_ok(password):
             return True
     print("PASSWORD NOT OK")
     return False
+
+
+def search_by(query, sort_by, order_by):
+    order = ""
+
+    if sort_by == "created_at":
+        order = " ORDER BY created_at"
+
+    if order_by == "desc":
+        order += " DESC"
+    elif order_by == "asc":
+        order += " ASC"
+
+    sql = "SELECT * FROM users WHERE LOWER(username) LIKE LOWER(:query)" + order
+    print(sql)
+
+    result = db.db.session.execute(db.text(sql), {"query":"%"+query+"%"})
+
+    return result.fetchall()
+
+
+def delete(id):
+    pass

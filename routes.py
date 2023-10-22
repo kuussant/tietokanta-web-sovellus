@@ -10,16 +10,25 @@ import subforums, discussions, messages, users, comments
 
 current_template = []
 
+sub_type = subforums.ITEM_TYPE
+disc_type = discussions.ITEM_TYPE
+comt_type = comments.ITEM_TYPE
+user_type = users.ITEM_TYPE
+
 @app.route("/")
 def index():
     sub_type = subforums.ITEM_TYPE
     disc_type = discussions.ITEM_TYPE
 
     session['url'] = url_for("index")
+    url_before()
     sub_list = subforums.get_list()
     disc_list = discussions.get_list()
 
     return render_template("index.html", featuring=helpers.sort_by_date_newest(sub_list+disc_list), sub_type=sub_type, disc_type=disc_type)
+
+
+########################## SUBFORUMS #######################################
 
 
 @app.route("/sub/<int:id>")
@@ -28,7 +37,17 @@ def sub(id):
     print("WENT TO SUB", id)
     list = discussions.get_list_by_sub_id(id)
     sub = subforums.get_sub(id)
-    return render_template("subforum.html", sub=sub, sub_admin=users.get_username(sub.user_id), discussions=list)
+    followers = subforums.get_followers(id)
+    print(len(followers))
+    return render_template("subforum_overview.html", sub=sub, followers=len(followers), sub_admin=users.get_username(sub.user_id), discussions=list)
+
+
+@app.route("/sub/<int:id>/manage")
+def sub_manage(id):
+    session['url'] = url_for("sub_manage", id=id)
+    sub = subforums.get_sub(id)
+    
+    return render_template("subforum_manage.html", sub=sub)
 
 
 @app.route("/new_sub")
@@ -44,6 +63,37 @@ def create_sub():
     user_id = users.session_user_id()
     subforums.create_new_sub(title, content, user_id)
     return redirect("/")
+
+
+@app.route("/update/sub/<int:id>", methods=["POST"])
+def update_sub(id):
+    title = request.form["title"]
+    content = request.form["content"]
+
+    print("YEET")
+    subforums.update_contents(id, title, content)
+
+    return redirect(session["url"])
+
+
+@app.route("/follow/sub/<int:id>")
+def sub_follow(id):
+    subforums.follow(id, users.session_user_id())
+    return redirect(session['url'])
+
+
+@app.route("/unfollow/sub/<int:id>")
+def sub_unfollow(id):
+    subforums.unfollow(id, users.session_user_id())
+    return redirect(session['url'])
+
+
+@app.route("/delete/sub/<int:id>")
+def sub_delete(id):
+    return render_template("confirm.html", item=subforums.get_sub(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+
+
+########################## DISCUSSIONS #######################################
 
 
 @app.route("/sub/<int:id>/new_discussion")
@@ -65,6 +115,7 @@ def create_discussion():
 
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>")
 def discussion(sub_id, disc_id):
+    url_before()
     session['url'] = url_for("discussion", sub_id=sub_id, disc_id=disc_id)
     list = comments.get_list_by_id(disc_id)
     disc = discussions.get_discussion(disc_id)
@@ -72,11 +123,21 @@ def discussion(sub_id, disc_id):
     return render_template("discussion.html", discussion=disc, comments=list, user_id=disc.user_id, sub_id=sub_id)
 
 
-
 @app.route("/sub/<int:sub_id>/discussion/<int:disc_id>/new_comment")
 def new_comment(sub_id, disc_id):
+    url_before()
     session['url'] = url_for("new_comment", sub_id=sub_id, disc_id=disc_id)
     return render_template("new_comment.html", sub_id=sub_id, disc_id=disc_id)
+
+
+@app.route("/delete/discussion/<int:id>")
+def discussion_delete(id):
+    print("DISCUSSING", discussions.get_discussion(id).item_type)
+
+    return render_template("confirm.html", item=discussions.get_discussion(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+
+
+########################## COMMENTS #######################################
 
 
 @app.route("/create_comment", methods=["POST"])
@@ -94,6 +155,13 @@ def create_comment():
     else:
         return redirect(session["url"])
 
+
+@app.route("/delete/comment/<int:id>")
+def comment_delete(id):
+    return render_template("confirm.html", item=comments.get_comment(id), sub_type=sub_type, disc_type=disc_type, comt_type=comt_type)
+
+
+########################## USERS #######################################
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -157,10 +225,8 @@ def register():
 
 @app.route("/profile/<int:id>", methods=["GET", "POST"])
 def profile(id):
-    sub_type = subforums.ITEM_TYPE
-    disc_type = discussions.ITEM_TYPE
-    comt_type = comments.ITEM_TYPE
 
+    url_before()
     session['url'] = url_for("profile", id=id)
     user = users.get_user_by_id(id)
     activity = helpers.sort_by_date_newest(users.get_user_activity(id))
@@ -203,47 +269,68 @@ def profile_comments(id):
     return render_template("profile_comments.html", user=user, comments=comnts)
 
 
-@app.route("/users")
-def explore_users():
-    session['url'] = url_for("explore_users")
-    list = users.get_list()
-    return render_template("users.html", users=list)
+@app.route("/profile/<int:id>/following")
+def profile_following(id):
+    session['url'] = url_for("profile_following", id=id)
+    user = users.get_user_by_id(id)
+    list = subforums.get_user_followed_subs(id)
+
+    return render_template("profile_following.html", user=user, subforums=list)
+
+
+@app.route("/delete/profile/<int:id>")
+def profile_delete(id):
+    item = users.get_user_by_id(id)
+    return render_template("confirm.html", item=item)
+
+
+########################## EXPLORE #######################################
 
 
 @app.route("/subforums")
 def explore_subforums():
     session['url'] = url_for("explore_subforums")
+    url_before()
     list = subforums.get_list()
     return render_template("subforums.html", subforums=list)
 
 
 @app.route("/discussions")
 def explore_discussions():
-    session['url'] = url_for("explore_subforums")
+    session['url'] = url_for("explore_discussions")
+    url_before()
     list = discussions.get_list()
     return render_template("discussions.html", discussions=list)
+
+
+@app.route("/users")
+def explore_users():
+    session['url'] = url_for("explore_users")
+    url_before()
+    list = users.get_list()
+    return render_template("users.html", users=list)
+
 
 @app.route("/result")
 def result():
     query = request.args["query"]
     option = request.args["sort_by"]
-    print(query, option)
-    sort_option = ""
+    type = request.args["item_type"]
 
-    if option == "newest":
-        sort_option = "created_at DESC"
+    print(type)
+    if type == sub_type:
+        list = subforums.search_by(query, option)
+        return render_template("subforums.html", subforums=list)
+    
+    if type == disc_type:
+        list = discussions.search_by(query, option)
+        return render_template("discussions.html", discussions=list)
 
-    elif option == "oldest":
-        sort_option = "created_at ASC"
+    if type == user_type:
+        option2 = request.args["order_by"]
+        list = users.search_by(query, option, option2)
+        return render_template("users.html", users=list)
 
-    elif option == "most_followed":
-        #########################
-        sort_option = "followers"
-
-    #sql = f"SELECT id, content FROM messages WHERE content LIKE :query ORDER BY {sort_option}"
-    #result = db.session.execute(sql, {"query":"%"+query+"%"})
-    #messages = result.fetchall()
-    print("SORT OPTION:", sort_option)
     return render_template("index.html")
 
 
@@ -253,13 +340,55 @@ def logout():
     return redirect(session["url"])
 
 
+@app.route("/confirm_delete", methods=["POST"])
+def confirm_delete():
+    item_id = request.form["item_id"]
+    item_type = request.form["item_type"]
+
+    session_user_id = users.session_user_id()
+
+    print(item_id, item_type)
+
+    if item_type == sub_type:
+        subforums.delete(item_id, session_user_id)
+
+    elif item_type == disc_type:
+        discussions.delete(item_id, session_user_id)
+
+    elif item_type == comt_type:
+        comments.delete(item_id, session_user_id)
+    
+    elif item_type == users.ITEM_TYPE:
+        pass
+    
+    return redirect(session["url_before"])
+
+
+def url_before():
+    session['url_before'] = session['url']
+    print("URL_BEFORE", session['url_before'])
+
+
 @app.context_processor
 def unil_processor():
+
+    def list_len(list):
+        return len(list)
+    
     def get_time_ago(time):
         return timefunctions.convert_time(time)
     
     def get_user_by_id(id):
         return users.get_user_by_id(id)
+    
+    def get_session_user_id():
+        return users.session_user_id()
+    
+    def get_session_username():
+        return users.session_username()
+    
+    def get_is_admin(id):
+        return users.is_admin(id)
     
     def get_sub_by_id(id):
         return subforums.get_sub(id)
@@ -267,4 +396,7 @@ def unil_processor():
     def get_discussion_by_id(id):
         return discussions.get_discussion(id)
     
-    return dict(get_time_ago=get_time_ago, get_user_by_id=get_user_by_id, get_sub_by_id=get_sub_by_id, get_discussion_by_id=get_discussion_by_id)
+    def does_user_follow_sub(sub_id, user_id, visible_false):
+        return subforums.does_user_follow_sub(sub_id, user_id, visible_false)
+    
+    return dict(list_len=list_len, get_time_ago=get_time_ago, get_user_by_id=get_user_by_id, get_session_user_id=get_session_user_id, get_session_username=get_session_username, get_is_admin=get_is_admin, get_sub_by_id=get_sub_by_id, get_discussion_by_id=get_discussion_by_id, does_user_follow_sub=does_user_follow_sub)

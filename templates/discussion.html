@@ -3,17 +3,28 @@
 {% block content %}
 
 <div class="container">
-    <small>
-        Started: <a href="/profile/{{ user_id }}">{{ get_user_by_id(user_id).username }}</a> {{ get_time_ago(discussion.created_at) }}
-    </small>
-    
-    <p class="py-2">
-        <b>{{ discussion.title }}</b>
-    </p>
-    
-    <p>
-        {{ discussion.content }}
-    </p>
+    <div class="row">
+        <div class="col">
+            <small>
+                Started: <a href="/profile/{{ user_id }}">{{ get_user_by_id(user_id).username }}</a> {{ get_time_ago(discussion.created_at) }}
+            </small>
+            
+            <p class="py-2">
+                <b>{{ discussion.title }}</b>
+            </p>
+            
+            <p>
+                {{ discussion.content }}
+            </p>
+        </div>
+        {% set session_user_id = get_session_user_id() %}
+        {% set is_admin = get_is_admin(session_user_id) %}
+        {% if discussion.user_id == get_session_user_id() or is_admin %}
+        <div>
+            <a href="{{ url_for('discussion_delete', id=discussion.id)}}"><button type="button" class="btn btn-danger">Delete</button></a>
+        </div>
+        {% endif %}
+    </div>
     <hr>
     {% if session.user %}
     <div class="row">
@@ -28,7 +39,7 @@
                 <div class="form-group col-6">
                     <button type="submit" class="btn btn-primary">Comment</button>
                     <input type="hidden" name="sub_id" value="{{ sub_id }}">
-                    <input type="hidden" name="disc_id" value="{{ id }}">
+                    <input type="hidden" name="disc_id" value="{{ discussion.id }}">
                 </div>
             
             </form>
@@ -45,9 +56,18 @@
     {% if comments %}
     <div class="container">
         {% for comment in comments %}
-        <small>
-            {% if user_id == comment.user_id %}<b>OP</b>{% endif %} <a href="/profile/{{ comment.user_id }}">{{ get_user_by_id(comment.user_id).username }}</a> &#x2022 {{ get_time_ago(comment.created_at)}}
-        </small>
+        <div class="row">
+            <small class="col">
+                {% if user_id == comment.user_id %}<b>OP</b>{% endif %} <a href="/profile/{{ comment.user_id }}">{{ get_user_by_id(comment.user_id).username }}</a> &#x2022 {{ get_time_ago(comment.created_at)}}
+            </small>
+            {% set session_user_id = get_session_user_id() %}
+            {% set is_admin = get_is_admin(session_user_id) %}
+            {% if comment.user_id == get_session_user_id() or is_admin %}
+            <div>
+                <a href="{{ url_for('comment_delete', id=comment.id)}}"><button type="button" class="btn btn-danger">Delete</button></a>
+            </div>
+            {% endif %}
+        </div>
         <br>
         {{ comment.content }}
         <hr>

@@ -1,0 +1,25 @@
+{% extends "subforum.html" %}
+{% block sub_content %}
+{% if get_session_user_id %}
+<div class="container">
+    <form action="{{ url_for('update_sub', id=sub.id) }}" method="POST">
+        <div class="form-group">
+            <label>Title</label>
+            <textarea type="text" class="form-control" name="title" rows="1">{{ sub.title }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Content</label>
+            <textarea type="text" class="form-control" name="content" rows="4">{{ sub.content }}</textarea>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="/"><button class="btn btn-outline-secondary" type="button" name="register">Cancel</button></a>
+        
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            <a href="{{ url_for('sub_delete', id=sub.id) }}"><button type="button" class="btn btn-danger">Delete</button></a>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

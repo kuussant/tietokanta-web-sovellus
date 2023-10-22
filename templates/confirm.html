@@ -1,0 +1,65 @@
+{% extends "sub_layout.html" %}
+{% block content %}
+<div class="container">
+    <form action="/confirm_delete" method="POST">
+        <div>
+            <h2><p class="text-danger">Are you sure you want to delete?</p></h2>
+        </div>
+        <hr>
+        {% if item.item_type == sub_type %}
+        <div>
+            <p>
+                <small>
+                    <a href="{{ url_for('profile', id=item.user_id) }}">{{ get_user_by_id(item.user_id).username }}</a> created {{ get_time_ago(item.created_at)}}
+                </small>
+            </p>
+        </div>
+        <div>
+            <h5>/sub/{{ item.id }} <a href="{{ url_for('sub', id=item.id) }}">{{ item.title }}</a></h5>
+        </div>
+        <hr>
+    
+        {% elif item.item_type == disc_type %}
+        <div>
+            <p>
+            <small>
+            <a href="{{ url_for('sub', id=item.subforum_id) }}">/sub/{{ item.subforum_id }}</a> &#x2022 <a href="{{ url_for('profile', id=item.user_id) }}">{{ get_user_by_id(item.user_id).username }}</a> posted {{ get_time_ago(item.created_at)}}
+            </small>
+            </p>
+        </div>
+        <div>
+            
+            <h5><a href="{{ url_for('discussion', sub_id=item.subforum_id, disc_id=item.id) }}">{{ item.title }}</a></h5>
+        </div>
+        <small>
+            {{ item.content }}
+        </small>
+        <hr>
+    
+        {% elif item.item_type == comt_type %}
+        {% set disc = get_discussion_by_id(item.discussion_id) %}
+        {% set sub = get_sub_by_id(disc.subforum_id) %}
+        <div>
+            <small>
+            <a href="{{ url_for('sub', id=sub.id) }}">/sub/{{ sub.id }}</a> &#x2022 <a href="{{ url_for('discussion', sub_id=sub.id, disc_id=disc.id) }}">{{ disc.title }}</a>
+            <br>
+            <a href="{{ url_for('profile', id=item.user_id) }}">{{ get_user_by_id(item.user_id).username }}</a> commented {{ get_time_ago(item.created_at)}}
+            </small>
+        </div>
+        <small>
+            {{ item.content }}
+        </small>
+        <hr>
+    
+        {% endif %}
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="item_type" value="{{ item.item_type }}">
+        <div class="row">
+            <div class="col">
+            <a href="{{ session.url }}"><button type="button" class="btn btn-primary">Cancel</button></a>
+            </div>
+            <button type="submit" class="btn btn-danger">Confirm</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

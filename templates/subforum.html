@@ -7,48 +7,43 @@
     <br>
     Created: {{ get_time_ago(sub.created_at) }}
     <p>
+        Followers: {{ followers }}
+        <br>
+        Discussions: {{ list_len(discussions) }}
+    </p>
+    <p>
         <h2>{{ sub.title }}</h2>
     </p>
     <p>
         {{ sub.content }}
     </p>
-
     <div>
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center">
             <li>
                 <a class="nav-link px-2 link-secondary" href="{{ url_for('new_discussion', id=sub.id) }}">Create discussion</a>
             </li>
+            {% set session_user_id = get_session_user_id() %}
+            {% set is_admin = get_is_admin(session_user_id) %}
+            {% if sub.user_id == get_session_user_id() or is_admin %}
             <li>
-                <a class="nav-link px-2 link-dark" href="{{ url_for('sub', id=sub.id) }}">Follow</a>
+                <a class="nav-link px-2 link-dark" href="{{ url_for('sub_manage', id=sub.id) }}">Manage</a>
+            </li> 
+            {% endif %}
+            {% if sub.user_id != get_session_user_id() %}
+            {% if does_user_follow_sub(sub.id, get_session_user_id(), 0)  %}
+            <li>
+                <a class="nav-link px-2 link-dark" href="{{ url_for('sub_unfollow', id=sub.id) }}">Unfollow</a>
             </li>
+            {% else %}
+            <li>
+                <a class="nav-link px-2 link-dark" href="{{ url_for('sub_follow', id=sub.id) }}">Follow</a>
+            </li>
+            {% endif %}
+            {% endif %}
         </ul>
     </div>
 
     <hr>
-    
-    {% if discussions %}
-    {% for discussion in discussions %}
-    <div class="container">
-        <div>
-            <p>
-            <small>
-            <a href="{{ url_for('profile', id=discussion.user_id) }}">{{ get_user_by_id(discussion.user_id).username }}</a> &#x2022 {{ get_time_ago(discussion.created_at)}}
-            </small>
-            </p>
-        </div>
-        <h5><a href="{{ url_for('discussion', sub_id=id, disc_id=discussion.id) }}">{{ discussion.title }}</a></h5>
-        <div>
-            <small>
-                {{ discussion.content }}
-            </small>
-        </div>
-        <hr>
-    </div>
-    {% endfor %}
-    {% else %}
-    <div class="d-flex flex-wrap align-items-center justify-content-center" style="height: 400px;">
-        <b>No discussions</b>
-    </div>
+    {% block sub_content %}{% endblock %}
 </div>
-{% endif %}
 {% endblock %}
